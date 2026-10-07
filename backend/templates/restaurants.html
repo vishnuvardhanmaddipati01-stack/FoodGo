@@ -1,0 +1,1694 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>FoodGo - Restaurants</title>
+
+    <link rel="stylesheet"
+          href="{% static 'style.css' %}">
+
+    <style>
+
+        /* =========================
+           RESTAURANT PAGE
+        ========================== */
+
+        .restaurants-hero {
+            background:
+                linear-gradient(
+                    135deg,
+                    #064e3b,
+                    #047857,
+                    #10b981
+                );
+
+            color: white;
+
+            padding: 45px;
+
+            border-radius: 26px;
+
+            margin-bottom: 35px;
+
+            box-shadow:
+                0 18px 40px
+                rgba(4,120,87,0.18);
+        }
+
+
+        .restaurants-hero h2 {
+            color: white;
+            font-size: 38px;
+            margin: 0 0 10px;
+        }
+
+
+        .restaurants-hero p {
+            color: rgba(255,255,255,0.88);
+            margin: 0;
+        }
+
+
+        /* =========================
+           SEARCH
+        ========================== */
+
+        .restaurant-search {
+            margin-bottom: 30px;
+        }
+
+
+        .restaurant-search input {
+            width: 100%;
+
+            padding: 16px 20px;
+
+            border:
+                2px solid #dbece5;
+
+            border-radius: 14px;
+
+            font-size: 16px;
+
+            outline: none;
+        }
+
+
+        .restaurant-search input:focus {
+            border-color: #10b981;
+
+            box-shadow:
+                0 0 0 4px
+                rgba(16,185,129,0.10);
+        }
+
+
+        /* =========================
+           RESTAURANT GRID
+        ========================== */
+
+        #restaurantContainer {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    auto-fit,
+                    minmax(270px, 1fr)
+                );
+
+            gap: 25px;
+        }
+
+
+        /* =========================
+           RESTAURANT CARD
+        ========================== */
+
+        .foodgo-restaurant-card {
+
+            background: white;
+
+            border-radius: 22px;
+
+            overflow: hidden;
+
+            border:
+                1px solid #e5eee9;
+
+            box-shadow:
+                0 8px 25px
+                rgba(0,80,50,0.08);
+
+            transition:
+                transform 0.25s,
+                box-shadow 0.25s;
+        }
+
+
+        .foodgo-restaurant-card:hover {
+
+            transform:
+                translateY(-7px);
+
+            box-shadow:
+                0 18px 35px
+                rgba(0,80,50,0.14);
+        }
+
+
+        .restaurant-image-wrapper {
+
+            position: relative;
+
+            height: 210px;
+
+            overflow: hidden;
+        }
+
+
+        .restaurant-image {
+
+            width: 100%;
+
+            height: 100%;
+
+            object-fit: cover;
+
+            display: block;
+
+            transition:
+                transform 0.4s;
+        }
+
+
+        .foodgo-restaurant-card:hover
+        .restaurant-image {
+
+            transform:
+                scale(1.06);
+        }
+
+
+        /* Rating badge */
+
+        .restaurant-rating {
+
+            position: absolute;
+
+            top: 14px;
+
+            right: 14px;
+
+            background: white;
+
+            color: #166534;
+
+            padding: 7px 10px;
+
+            border-radius: 20px;
+
+            font-size: 13px;
+
+            font-weight: 800;
+
+            box-shadow:
+                0 4px 12px
+                rgba(0,0,0,0.15);
+        }
+
+
+        .restaurant-details {
+
+            padding: 20px;
+        }
+
+
+        .restaurant-details h3 {
+
+            margin:
+                0 0 8px;
+
+            color:
+                #064e3b;
+
+            font-size:
+                20px;
+        }
+
+
+        .restaurant-description {
+
+            color:
+                #64748b;
+
+            font-size:
+                14px;
+
+            line-height:
+                1.5;
+
+            min-height:
+                42px;
+        }
+
+
+        .restaurant-address {
+
+            color:
+                #64748b;
+
+            font-size:
+                13px;
+
+            margin:
+                12px 0;
+        }
+
+
+        .restaurant-type {
+
+            display:
+                inline-block;
+
+            padding:
+                6px 10px;
+
+            border-radius:
+                20px;
+
+            background:
+                #ecfdf5;
+
+            color:
+                #047857;
+
+            font-size:
+                12px;
+
+            font-weight:
+                700;
+
+            margin-bottom:
+                15px;
+        }
+
+
+        .menu-button {
+
+            width:
+                100%;
+
+            padding:
+                13px;
+
+            border:
+                none;
+
+            border-radius:
+                11px;
+
+            background:
+                #047857;
+
+            color:
+                white;
+
+            font-size:
+                14px;
+
+            font-weight:
+                700;
+
+            cursor:
+                pointer;
+
+            transition:
+                0.2s;
+        }
+
+
+        .menu-button:hover {
+
+            background:
+                #059669;
+
+            transform:
+                translateY(-1px);
+        }
+
+
+        /* =========================
+           LOCATION
+        ========================== */
+
+        .location-box {
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            gap:
+                10px;
+
+            padding:
+                12px 15px;
+
+            margin-bottom:
+                25px;
+
+            background:
+                #ecfdf5;
+
+            border:
+                1px solid #a7f3d0;
+
+            border-radius:
+                12px;
+
+            color:
+                #065f46;
+
+            font-size:
+                14px;
+        }
+
+
+        /* =========================
+           LOADING
+        ========================== */
+
+        .loading-box {
+
+            grid-column:
+                1 / -1;
+
+            padding:
+                50px;
+
+            text-align:
+                center;
+
+            background:
+                white;
+
+            border-radius:
+                20px;
+
+            color:
+                #64748b;
+        }
+
+
+        /* =========================
+           CHATBOT
+        ========================== */
+
+        .chat-button {
+
+            position:
+                fixed;
+
+            right:
+                25px;
+
+            bottom:
+                25px;
+
+            width:
+                60px;
+
+            height:
+                60px;
+
+            border:
+                none;
+
+            border-radius:
+                50%;
+
+            background:
+                #047857;
+
+            color:
+                white;
+
+            font-size:
+                25px;
+
+            cursor:
+                pointer;
+
+            box-shadow:
+                0 8px 25px
+                rgba(0,80,50,0.25);
+
+            z-index:
+                1000;
+        }
+
+
+        .chat-box {
+
+            position:
+                fixed;
+
+            right:
+                25px;
+
+            bottom:
+                95px;
+
+            width:
+                340px;
+
+            background:
+                white;
+
+            border-radius:
+                18px;
+
+            overflow:
+                hidden;
+
+            box-shadow:
+                0 15px 40px
+                rgba(0,0,0,0.20);
+
+            border:
+                1px solid #dbece5;
+
+            z-index:
+                1000;
+
+            display:
+                none;
+        }
+
+
+        .chat-header {
+
+            background:
+                #047857;
+
+            color:
+                white;
+
+            padding:
+                15px;
+
+            font-weight:
+                700;
+
+            display:
+                flex;
+
+            justify-content:
+                space-between;
+        }
+
+
+        .chat-messages {
+
+            height:
+                230px;
+
+            overflow-y:
+                auto;
+
+            padding:
+                15px;
+
+            font-size:
+                14px;
+        }
+
+
+        .chat-input {
+
+            display:
+                flex;
+
+            border-top:
+                1px solid #e5eee9;
+        }
+
+
+        .chat-input input {
+
+            border:
+                none;
+
+            border-radius:
+                0;
+
+            flex:
+                1;
+        }
+
+
+        .chat-input button {
+
+            border:
+                none;
+
+            background:
+                #047857;
+
+            color:
+                white;
+
+            padding:
+                0 18px;
+
+            cursor:
+                pointer;
+        }
+
+
+        @media (max-width: 600px) {
+
+            .restaurants-hero {
+
+                padding:
+                    30px 22px;
+            }
+
+
+            .restaurants-hero h2 {
+
+                font-size:
+                    30px;
+            }
+
+
+            .chat-box {
+
+                width:
+                    calc(100% - 30px);
+
+                right:
+                    15px;
+            }
+
+
+            .chat-button {
+
+                right:
+                    15px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =========================
+         HEADER
+    ========================== -->
+
+    <header>
+
+        <a href="/restaurants/">
+
+            <img
+                src="{% static 'foodgo-logo.svg' %}"
+                class="foodgo-logo"
+                alt="FoodGo"
+            >
+
+        </a>
+
+
+        <div class="header-links">
+
+            <a href="/restaurants/">
+                Restaurants
+            </a>
+
+            <a href="/cart/">
+                🛒 Cart
+            </a>
+
+            <a href="/orders/">
+                Orders
+            </a>
+
+            <a href="/profile/">
+                Profile
+            </a>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- =========================
+         MAIN
+    ========================== -->
+
+    <main>
+
+
+        <!-- HERO -->
+
+        <section class="restaurants-hero">
+
+            <h2>
+                Discover Delicious Food 🍽️
+            </h2>
+
+            <p>
+                Explore the best restaurants
+                around you and order your
+                favourite meals.
+            </p>
+
+        </section>
+
+
+
+        <!-- LOCATION -->
+
+        <div
+            class="location-box"
+            id="locationBox"
+        >
+
+            📍
+
+            <span id="locationText">
+                Finding your location...
+            </span>
+
+        </div>
+
+
+
+        <!-- SEARCH -->
+
+        <div class="restaurant-search">
+
+            <input
+                type="text"
+                id="searchInput"
+                placeholder="🔍 Search restaurants..."
+            >
+
+        </div>
+
+
+
+        <!-- TITLE -->
+
+        <h2>
+            Popular Restaurants
+        </h2>
+
+
+
+        <!-- RESTAURANTS -->
+
+        <div
+            id="restaurantContainer"
+        >
+
+            <div class="loading-box">
+
+                🍽️
+
+                <p>
+                    Loading restaurants...
+                </p>
+
+            </div>
+
+        </div>
+
+
+    </main>
+
+
+
+    <!-- =========================
+         CHATBOT
+    ========================== -->
+
+    <button
+        class="chat-button"
+        id="chatButton"
+        type="button"
+    >
+        💬
+    </button>
+
+
+    <div
+        class="chat-box"
+        id="chatBox"
+    >
+
+        <div class="chat-header">
+
+            <span>
+                FoodGo Help 💚
+            </span>
+
+            <button
+                id="closeChat"
+                type="button"
+                style="
+                    border:none;
+                    background:none;
+                    color:white;
+                    font-size:20px;
+                    cursor:pointer;
+                "
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <div
+            class="chat-messages"
+            id="chatMessages"
+        >
+
+            <p>
+                👋 Hi! I'm FoodGo Assistant.
+            </p>
+
+            <p>
+                How can I help you?
+            </p>
+
+        </div>
+
+
+        <div class="chat-input">
+
+            <input
+                type="text"
+                id="chatInput"
+                placeholder="Type your question..."
+            >
+
+            <button
+                type="button"
+                id="sendChat"
+            >
+                Send
+            </button>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =========================
+         FOOTER
+    ========================== -->
+
+    <footer>
+
+        <p>
+            © 2026 FoodGo
+        </p>
+
+        <p>
+            Fresh food. Fast delivery. 💚
+        </p>
+
+    </footer>
+
+
+
+    <!-- =========================
+         JAVASCRIPT
+    ========================== -->
+
+    <script>
+
+
+        /* =====================================
+           API
+        ====================================== */
+
+        const API_BASE_URL = "/api";
+
+
+        /* =====================================
+           RESTAURANT DATA
+        ====================================== */
+
+        let allRestaurants = [];
+
+
+
+        /* =====================================
+           RESTAURANT IMAGE FUNCTION
+        ====================================== */
+
+        function getRestaurantImage(
+            restaurant
+        ) {
+
+            /*
+                If admin already has an image,
+                use that image first.
+            */
+
+            if (
+                restaurant.image &&
+                restaurant.image.trim() !== ""
+            ) {
+
+                return restaurant.image;
+
+            }
+
+
+            /*
+                Otherwise choose an image
+                based on restaurant name.
+            */
+
+            const name =
+                restaurant.name.toLowerCase();
+
+
+
+            if (
+                name.includes("biryani")
+            ) {
+
+                return "https://images.unsplash.com/photo-1563379091339-03246963d96c?auto=format&fit=crop&w=900&q=80";
+
+            }
+
+
+            if (
+                name.includes("barbecue") ||
+                name.includes("barbeque") ||
+                name.includes("grill")
+            ) {
+
+                return "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=900&q=80";
+
+            }
+
+
+            if (
+                name.includes("sea") ||
+                name.includes("fish") ||
+                name.includes("coast")
+            ) {
+
+                return "https://images.unsplash.com/photo-1534482421-64566f976cfa?auto=format&fit=crop&w=900&q=80";
+
+            }
+
+
+            if (
+                name.includes("chinese") ||
+                name.includes("dragon") ||
+                name.includes("noodle")
+            ) {
+
+                return "https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format&fit=crop&w=900&q=80";
+
+            }
+
+
+            if (
+                name.includes("south") ||
+                name.includes("udupi") ||
+                name.includes("dosa")
+            ) {
+
+                return "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&w=900&q=80";
+
+            }
+
+
+            if (
+                name.includes("north") ||
+                name.includes("punjab") ||
+                name.includes("tandoor")
+            ) {
+
+                return "https://images.unsplash.com/photo-1565557623262-b51c2513a641?auto=format&fit=crop&w=900&q=80";
+
+            }
+
+
+            /*
+                General Indian restaurant image.
+            */
+
+            return "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=900&q=80";
+
+        }
+
+
+
+        /* =====================================
+           RESTAURANT TYPE
+        ====================================== */
+
+        function getRestaurantType(
+            restaurant
+        ) {
+
+            const name =
+                restaurant.name.toLowerCase();
+
+
+            if (
+                name.includes("biryani")
+            ) {
+
+                return "🍛 Biryani & Indian";
+
+            }
+
+
+            if (
+                name.includes("barbecue") ||
+                name.includes("barbeque") ||
+                name.includes("grill")
+            ) {
+
+                return "🔥 BBQ & Grill";
+
+            }
+
+
+            if (
+                name.includes("sea") ||
+                name.includes("fish")
+            ) {
+
+                return "🦐 Seafood";
+
+            }
+
+
+            if (
+                name.includes("chinese") ||
+                name.includes("noodle")
+            ) {
+
+                return "🍜 Chinese";
+
+            }
+
+
+            return "🍽️ Indian Cuisine";
+
+        }
+
+
+
+        /* =====================================
+           LOAD RESTAURANTS
+        ====================================== */
+
+        async function loadRestaurants() {
+
+
+            const container =
+                document.getElementById(
+                    "restaurantContainer"
+                );
+
+
+            try {
+
+
+                const response =
+                    await fetch(
+                        API_BASE_URL +
+                        "/restaurants/"
+                    );
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        "Unable to load restaurants"
+                    );
+
+                }
+
+
+                allRestaurants =
+                    await response.json();
+
+
+                displayRestaurants(
+                    allRestaurants
+                );
+
+
+            }
+
+            catch (error) {
+
+
+                console.error(
+                    "Restaurant error:",
+                    error
+                );
+
+
+                container.innerHTML = `
+
+                    <div class="loading-box">
+
+                        <div
+                            style="
+                                font-size:45px;
+                            "
+                        >
+                            ⚠️
+                        </div>
+
+                        <h3>
+                            Unable to load restaurants
+                        </h3>
+
+                        <p>
+                            Please make sure the
+                            Django server is running.
+                        </p>
+
+                    </div>
+
+                `;
+
+            }
+
+        }
+
+
+
+        /* =====================================
+           DISPLAY RESTAURANTS
+        ====================================== */
+
+        function displayRestaurants(
+            restaurants
+        ) {
+
+
+            const container =
+                document.getElementById(
+                    "restaurantContainer"
+                );
+
+
+            container.innerHTML = "";
+
+
+
+            if (
+                restaurants.length === 0
+            ) {
+
+                container.innerHTML = `
+
+                    <div class="loading-box">
+
+                        🍽️
+
+                        <h3>
+                            No restaurants found
+                        </h3>
+
+                        <p>
+                            Try another search.
+                        </p>
+
+                    </div>
+
+                `;
+
+                return;
+
+            }
+
+
+
+            restaurants.forEach(
+                function(restaurant) {
+
+
+                    const card =
+                        document.createElement(
+                            "div"
+                        );
+
+
+                    card.className =
+                        "foodgo-restaurant-card";
+
+
+
+                    const image =
+                        getRestaurantImage(
+                            restaurant
+                        );
+
+
+                    const type =
+                        getRestaurantType(
+                            restaurant
+                        );
+
+
+
+                    card.innerHTML = `
+
+                        <div
+                            class="restaurant-image-wrapper"
+                        >
+
+                            <img
+                                class="restaurant-image"
+                                src="${image}"
+                                alt="${restaurant.name}"
+                                onerror="
+                                    this.src=
+                                    'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=900&q=80'
+                                "
+                            >
+
+
+                            <div
+                                class="restaurant-rating"
+                            >
+                                ⭐ ${restaurant.rating}
+                            </div>
+
+                        </div>
+
+
+
+                        <div
+                            class="restaurant-details"
+                        >
+
+                            <h3>
+                                ${restaurant.name}
+                            </h3>
+
+
+                            <span
+                                class="restaurant-type"
+                            >
+                                ${type}
+                            </span>
+
+
+                            <p
+                                class="restaurant-description"
+                            >
+                                ${
+                                    restaurant.description ||
+                                    "Delicious food prepared fresh for you."
+                                }
+                            </p>
+
+
+                            <p
+                                class="restaurant-address"
+                            >
+                                📍 ${restaurant.address}
+                            </p>
+
+
+                            <button
+                                class="menu-button"
+                                type="button"
+                            >
+                                View Menu →
+                            </button>
+
+                        </div>
+
+                    `;
+
+
+
+                    const button =
+                        card.querySelector(
+                            ".menu-button"
+                        );
+
+
+                    button.addEventListener(
+                        "click",
+                        function() {
+
+                            localStorage.setItem(
+                                "selectedRestaurantId",
+                                restaurant.id
+                            );
+
+
+                            localStorage.setItem(
+                                "selectedRestaurantName",
+                                restaurant.name
+                            );
+
+
+                            window.location.href =
+                                "/restaurant/";
+
+                        }
+                    );
+
+
+
+                    container.appendChild(
+                        card
+                    );
+
+
+                }
+            );
+
+        }
+
+
+
+        /* =====================================
+           SEARCH
+        ====================================== */
+
+        document
+            .getElementById("searchInput")
+            .addEventListener(
+                "input",
+                function(event) {
+
+
+                    const search =
+                        event.target.value
+                            .toLowerCase()
+                            .trim();
+
+
+                    const filtered =
+                        allRestaurants.filter(
+                            function(restaurant) {
+
+                                return (
+
+                                    restaurant.name
+                                        .toLowerCase()
+                                        .includes(search)
+
+                                    ||
+
+                                    restaurant.address
+                                        .toLowerCase()
+                                        .includes(search)
+
+                                    ||
+
+                                    (
+                                        restaurant.description ||
+                                        ""
+                                    )
+                                    .toLowerCase()
+                                    .includes(search)
+
+                                );
+
+                            }
+                        );
+
+
+                    displayRestaurants(
+                        filtered
+                    );
+
+                }
+            );
+
+
+
+        /* =====================================
+           LOCATION
+        ====================================== */
+
+        function getLocation() {
+
+
+            const locationText =
+                document.getElementById(
+                    "locationText"
+                );
+
+
+            if (
+                !navigator.geolocation
+            ) {
+
+                locationText.innerText =
+                    "Location not supported";
+
+                return;
+
+            }
+
+
+            navigator.geolocation
+                .getCurrentPosition(
+
+                    async function(position) {
+
+
+                        const latitude =
+                            position.coords.latitude;
+
+
+                        const longitude =
+                            position.coords.longitude;
+
+
+                        try {
+
+
+                            const response =
+                                await fetch(
+
+                                    "https://nominatim.openstreetmap.org/reverse" +
+                                    "?format=json" +
+                                    "&lat=" +
+                                    latitude +
+                                    "&lon=" +
+                                    longitude +
+                                    "&zoom=18" +
+                                    "&addressdetails=1"
+
+                                );
+
+
+                            const data =
+                                await response.json();
+
+
+                            if (
+                                data.display_name
+                            ) {
+
+                                locationText.innerText =
+                                    data.display_name;
+
+                            }
+
+                            else {
+
+                                locationText.innerText =
+                                    "Location detected";
+
+                            }
+
+                        }
+
+                        catch (error) {
+
+                            locationText.innerText =
+                                "Location detected";
+
+                        }
+
+                    },
+
+
+                    function() {
+
+                        locationText.innerText =
+                            "Location unavailable";
+
+                    },
+
+                    {
+                        enableHighAccuracy: true,
+
+                        timeout: 10000,
+
+                        maximumAge: 60000
+                    }
+
+                );
+
+        }
+
+
+
+        /* =====================================
+           CHATBOT
+        ====================================== */
+
+        const chatButton =
+            document.getElementById(
+                "chatButton"
+            );
+
+
+        const chatBox =
+            document.getElementById(
+                "chatBox"
+            );
+
+
+        const closeChat =
+            document.getElementById(
+                "closeChat"
+            );
+
+
+        const sendChat =
+            document.getElementById(
+                "sendChat"
+            );
+
+
+        const chatInput =
+            document.getElementById(
+                "chatInput"
+            );
+
+
+        const chatMessages =
+            document.getElementById(
+                "chatMessages"
+            );
+
+
+
+        chatButton.addEventListener(
+            "click",
+            function() {
+
+                chatBox.style.display =
+                    "block";
+
+            }
+        );
+
+
+
+        closeChat.addEventListener(
+            "click",
+            function() {
+
+                chatBox.style.display =
+                    "none";
+
+            }
+        );
+
+
+
+        function addChatMessage(
+            message,
+            user
+        ) {
+
+
+            const p =
+                document.createElement(
+                    "p"
+                );
+
+
+            p.style.margin =
+                "8px 0";
+
+
+            p.innerText =
+                (user ? "You: " : "FoodGo: ") +
+                message;
+
+
+            chatMessages.appendChild(
+                p
+            );
+
+
+            chatMessages.scrollTop =
+                chatMessages.scrollHeight;
+
+        }
+
+
+
+        function chatbotReply(
+            message
+        ) {
+
+
+            const text =
+                message.toLowerCase();
+
+
+
+            if (
+                text.includes("order")
+            ) {
+
+                return "You can view your orders from the Orders section.";
+
+            }
+
+
+            if (
+                text.includes("cart")
+            ) {
+
+                return "Open Cart from the top menu to check your selected food.";
+
+            }
+
+
+            if (
+                text.includes("delivery")
+            ) {
+
+                return "FoodGo provides fast food delivery from available restaurants.";
+
+            }
+
+
+            if (
+                text.includes("payment")
+            ) {
+
+                return "Currently, FoodGo supports Cash on Delivery.";
+
+            }
+
+
+            if (
+                text.includes("cancel")
+            ) {
+
+                return "Please contact FoodGo support if you need help cancelling an order.";
+
+            }
+
+
+            if (
+                text.includes("hello") ||
+                text.includes("hi")
+            ) {
+
+                return "Hello! 👋 How can I help you with your FoodGo order?";
+
+            }
+
+
+            return "I can help with restaurants, food, cart, orders, delivery and payment. 😊";
+
+        }
+
+
+
+        sendChat.addEventListener(
+            "click",
+            function() {
+
+
+                const message =
+                    chatInput.value.trim();
+
+
+                if (!message) {
+
+                    return;
+
+                }
+
+
+                addChatMessage(
+                    message,
+                    true
+                );
+
+
+                chatInput.value = "";
+
+
+                setTimeout(
+                    function() {
+
+                        addChatMessage(
+                            chatbotReply(message),
+                            false
+                        );
+
+                    },
+                    400
+                );
+
+            }
+        );
+
+
+
+        chatInput.addEventListener(
+            "keydown",
+            function(event) {
+
+                if (
+                    event.key === "Enter"
+                ) {
+
+                    sendChat.click();
+
+                }
+
+            }
+        );
+
+
+
+        /* =====================================
+           START PAGE
+        ====================================== */
+
+        loadRestaurants();
+
+        getLocation();
+
+
+    </script>
+
+
+</body>
+
+</html>

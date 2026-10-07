@@ -1,0 +1,2019 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>FoodGo - Checkout</title>
+
+    <link rel="stylesheet"
+          href="{% static 'style.css' %}">
+
+    <style>
+
+        /* =========================
+           CHECKOUT PAGE
+        ========================== */
+
+        .checkout-page {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .checkout-header {
+            background:
+                linear-gradient(
+                    135deg,
+                    #064e3b,
+                    #047857,
+                    #10b981
+                );
+
+            color: white;
+            padding: 35px;
+            border-radius: 24px;
+            margin-bottom: 30px;
+
+            box-shadow:
+                0 15px 35px
+                rgba(4,120,87,0.18);
+        }
+
+        .checkout-header h2 {
+            margin: 0 0 8px;
+            color: white;
+            font-size: 34px;
+        }
+
+        .checkout-header p {
+            margin: 0;
+            color: rgba(255,255,255,0.88);
+        }
+
+        .checkout-layout {
+            display: grid;
+            grid-template-columns: 1.4fr 0.8fr;
+            gap: 25px;
+        }
+
+        .checkout-card {
+            background: white;
+            padding: 25px;
+            border-radius: 20px;
+            border: 1px solid #e5eee9;
+
+            box-shadow:
+                0 8px 22px
+                rgba(0,80,50,0.07);
+
+            margin-bottom: 20px;
+        }
+
+        .checkout-card h3 {
+            color: #064e3b;
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+
+        /* =========================
+           FORM
+        ========================== */
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 7px;
+            color: #334155;
+            font-weight: 700;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 13px 15px;
+            border: 1px solid #cbd5e1;
+            border-radius: 11px;
+            font-size: 15px;
+            outline: none;
+            font-family: inherit;
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            border-color: #10b981;
+
+            box-shadow:
+                0 0 0 3px
+                rgba(16,185,129,0.10);
+        }
+
+        /* =========================
+           LOCATION
+        ========================== */
+
+        .location-button {
+            margin-top: 8px;
+            border: 1px solid #10b981;
+            background: #ecfdf5;
+            color: #047857;
+            padding: 11px 15px;
+            border-radius: 9px;
+            cursor: pointer;
+            font-weight: 700;
+        }
+
+        .location-button:hover {
+            background: #d1fae5;
+        }
+
+        .live-location {
+            margin-top: 15px;
+            padding: 15px;
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0;
+            border-radius: 14px;
+        }
+
+        .live-location-title {
+            color: #065f46;
+            font-weight: 800;
+            margin-bottom: 7px;
+        }
+
+        .live-status {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            color: #047857;
+            font-size: 13px;
+        }
+
+        .live-dot {
+            width: 9px;
+            height: 9px;
+            background: #ef4444;
+            border-radius: 50%;
+            animation: pulse 1.2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.3;
+            }
+
+            100% {
+                opacity: 1;
+            }
+
+        }
+
+        .coordinates {
+            margin-top: 8px;
+            color: #64748b;
+            font-size: 12px;
+            word-break: break-all;
+        }
+
+        .map-preview {
+            margin-top: 12px;
+            width: 100%;
+            height: 180px;
+            border-radius: 12px;
+            border: 1px solid #dbece5;
+            overflow: hidden;
+            display: none;
+        }
+
+        .map-preview iframe {
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        /* =========================
+           DELIVERY TIME
+        ========================== */
+
+        .delivery-time {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 18px;
+            background: #fff7ed;
+            border: 1px solid #fed7aa;
+            border-radius: 14px;
+            margin-bottom: 20px;
+        }
+
+        .delivery-icon {
+            font-size: 35px;
+        }
+
+        .delivery-title {
+            color: #9a3412;
+            font-weight: 800;
+            font-size: 17px;
+        }
+
+        .delivery-value {
+            color: #c2410c;
+            font-size: 14px;
+            margin-top: 3px;
+        }
+
+        /* =========================
+           PAYMENT
+        ========================== */
+
+        .payment-option {
+            border: 2px solid #e2e8f0;
+            background: white;
+            padding: 17px;
+            border-radius: 13px;
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .payment-option:hover {
+            border-color: #10b981;
+            background: #f0fdf4;
+        }
+
+        .payment-option.selected {
+            border-color: #047857;
+            background: #ecfdf5;
+        }
+
+        .payment-option input {
+            width: 18px;
+            height: 18px;
+            accent-color: #047857;
+        }
+
+        .payment-logo {
+            width: 45px;
+            height: 45px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 23px;
+            background: #f1f5f9;
+        }
+
+        .payment-title {
+            font-weight: 800;
+            color: #064e3b;
+        }
+
+        .payment-subtitle {
+            display: block;
+            margin-top: 3px;
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        /* =========================
+           ORDER ITEMS
+        ========================== */
+
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            padding: 13px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .order-item:last-child {
+            border-bottom: none;
+        }
+
+        .order-item-name {
+            color: #334155;
+            font-weight: 700;
+        }
+
+        .order-item-quantity {
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        .order-item-price {
+            color: #047857;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        /* =========================
+           SUMMARY
+        ========================== */
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 13px 0;
+            color: #475569;
+        }
+
+        .summary-total {
+            border-top: 1px solid #e2e8f0;
+            padding-top: 18px;
+            margin-top: 18px;
+            color: #064e3b;
+            font-size: 22px;
+            font-weight: 800;
+        }
+
+        /* =========================
+           BUTTONS
+        ========================== */
+
+        .place-order-button {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            background: #047857;
+            color: white;
+            font-size: 16px;
+            font-weight: 800;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .place-order-button:hover {
+            background: #059669;
+        }
+
+        .place-order-button:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+        }
+
+        .back-cart-button {
+            width: 100%;
+            padding: 13px;
+            border: 2px solid #047857;
+            border-radius: 12px;
+            background: white;
+            color: #047857;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .back-cart-button:hover {
+            background: #ecfdf5;
+        }
+
+        /* =========================
+           ERROR
+        ========================== */
+
+        .error-message {
+            background: #fee2e2;
+            color: #b91c1c;
+            padding: 13px;
+            border-radius: 10px;
+            margin-bottom: 18px;
+            display: none;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        /* =========================
+           SUCCESS
+        ========================== */
+
+        .success-message {
+            background: #dcfce7;
+            color: #166534;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: none;
+            font-weight: 700;
+        }
+
+        @media (max-width: 800px) {
+
+            .checkout-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .checkout-header h2 {
+                font-size: 28px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =========================
+         HEADER
+    ========================== -->
+
+    <header>
+
+        <a href="/restaurants/">
+
+            <img
+                src="{% static 'foodgo-logo.svg' %}"
+                class="foodgo-logo"
+                alt="FoodGo"
+            >
+
+        </a>
+
+
+        <div class="header-links">
+
+            <a href="/restaurants/">
+                Restaurants
+            </a>
+
+            <a href="/cart/">
+                🛒 Cart
+            </a>
+
+            <a href="/orders/">
+                Orders
+            </a>
+
+            <a href="/profile/">
+                Profile
+            </a>
+
+        </div>
+
+    </header>
+
+
+    <!-- =========================
+         MAIN
+    ========================== -->
+
+    <main class="checkout-page">
+
+
+        <section class="checkout-header">
+
+            <h2>
+                Checkout 🛍️
+            </h2>
+
+            <p>
+                Confirm your delivery details and place your order.
+            </p>
+
+        </section>
+
+
+        <div
+            class="error-message"
+            id="errorMessage"
+        ></div>
+
+
+        <div
+            class="success-message"
+            id="successMessage"
+        ></div>
+
+
+        <div class="checkout-layout">
+
+
+            <!-- =====================
+                 LEFT SIDE
+            ====================== -->
+
+            <div>
+
+
+                <!-- DELIVERY TIME -->
+
+                <div class="delivery-time">
+
+                    <div class="delivery-icon">
+                        🚚
+                    </div>
+
+                    <div>
+
+                        <div class="delivery-title">
+                            Estimated Delivery
+                        </div>
+
+                        <div class="delivery-value">
+                            Your food should arrive in
+                            <strong>
+                                30–40 minutes
+                            </strong>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- DELIVERY DETAILS -->
+
+                <div class="checkout-card">
+
+                    <h3>
+                        📍 Delivery Details
+                    </h3>
+
+
+                    <div class="form-group">
+
+                        <label for="customerName">
+                            Full Name
+                        </label>
+
+                        <input
+                            type="text"
+                            id="customerName"
+                            placeholder="Enter your name"
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="mobile">
+                            Mobile Number
+                        </label>
+
+                        <input
+                            type="tel"
+                            id="mobile"
+                            maxlength="10"
+                            placeholder="Enter 10-digit mobile number"
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="address">
+                            Delivery Address
+                        </label>
+
+                        <textarea
+                            id="address"
+                            placeholder="Enter your complete delivery address"
+                        ></textarea>
+
+
+                        <button
+                            class="location-button"
+                            type="button"
+                            id="locationButton"
+                        >
+                            📍 Use My Current Location
+                        </button>
+
+
+                        <!-- LIVE LOCATION -->
+
+                        <div
+                            class="live-location"
+                            id="liveLocation"
+                        >
+
+                            <div
+                                class="live-location-title"
+                            >
+                                📡 Live Location
+                            </div>
+
+
+                            <div
+                                class="live-status"
+                                id="liveStatus"
+                            >
+
+                                <span class="live-dot"></span>
+
+                                Waiting for location...
+
+                            </div>
+
+
+                            <div
+                                class="coordinates"
+                                id="coordinates"
+                            >
+                                Location will appear here.
+                            </div>
+
+
+                            <div
+                                class="map-preview"
+                                id="mapPreview"
+                            >
+
+                                <iframe
+                                    id="mapFrame"
+                                    loading="lazy"
+                                    title="Delivery location"
+                                ></iframe>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- PAYMENT -->
+
+                <div class="checkout-card">
+
+                    <h3>
+                        💳 Payment Method
+                    </h3>
+
+
+                    <!-- COD -->
+
+                    <label
+                        class="payment-option selected"
+                        id="codOption"
+                    >
+
+                        <input
+                            type="radio"
+                            name="payment"
+                            value="COD"
+                            checked
+                        >
+
+
+                        <div class="payment-logo">
+                            💵
+                        </div>
+
+
+                        <div>
+
+                            <span class="payment-title">
+                                Cash on Delivery
+                            </span>
+
+                            <span class="payment-subtitle">
+                                Pay when your food arrives.
+                            </span>
+
+                        </div>
+
+                    </label>
+
+
+                    <!-- GOOGLE PAY -->
+
+                    <label
+                        class="payment-option"
+                        id="gpayOption"
+                    >
+
+                        <input
+                            type="radio"
+                            name="payment"
+                            value="GPAY"
+                        >
+
+
+                        <div class="payment-logo">
+                            📱
+                        </div>
+
+
+                        <div>
+
+                            <span class="payment-title">
+                                Google Pay
+                            </span>
+
+                            <span class="payment-subtitle">
+                                Pay securely using Google Pay.
+                            </span>
+
+                        </div>
+
+                    </label>
+
+
+                    <!-- PHONEPE -->
+
+                    <label
+                        class="payment-option"
+                        id="phonepeOption"
+                    >
+
+                        <input
+                            type="radio"
+                            name="payment"
+                            value="PHONEPE"
+                        >
+
+
+                        <div class="payment-logo">
+                            📲
+                        </div>
+
+
+                        <div>
+
+                            <span class="payment-title">
+                                PhonePe
+                            </span>
+
+                            <span class="payment-subtitle">
+                                Pay securely using PhonePe.
+                            </span>
+
+                        </div>
+
+                    </label>
+
+                </div>
+
+
+            </div>
+
+
+            <!-- =====================
+                 RIGHT SIDE
+            ====================== -->
+
+            <div>
+
+                <div class="checkout-card">
+
+                    <h3>
+                        🛒 Your Order
+                    </h3>
+
+
+                    <div id="orderItems">
+                        Loading...
+                    </div>
+
+
+                    <div class="summary-row">
+
+                        <span>
+                            Subtotal
+                        </span>
+
+                        <span id="subtotal">
+                            ₹0.00
+                        </span>
+
+                    </div>
+
+
+                    <div class="summary-row">
+
+                        <span>
+                            Delivery Fee
+                        </span>
+
+                        <span>
+                            ₹40.00
+                        </span>
+
+                    </div>
+
+
+                    <div class="summary-row summary-total">
+
+                        <span>
+                            Total
+                        </span>
+
+                        <span id="total">
+                            ₹0.00
+                        </span>
+
+                    </div>
+
+
+                    <button
+                        class="place-order-button"
+                        id="placeOrderButton"
+                        type="button"
+                    >
+                        Place Order 🚀
+                    </button>
+
+
+                    <button
+                        class="back-cart-button"
+                        id="backCartButton"
+                        type="button"
+                    >
+                        ← Back to Cart
+                    </button>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+    </main>
+
+
+    <!-- FOOTER -->
+
+    <footer>
+
+        <p>
+            © 2026 FoodGo
+        </p>
+
+        <p>
+            Fresh food. Fast delivery. 💚
+        </p>
+
+    </footer>
+
+
+    <script>
+
+        /* =========================
+           API
+        ========================== */
+
+        const API_BASE_URL = "/api";
+
+
+        /* =========================
+           CART
+        ========================== */
+
+        let cart =
+            JSON.parse(
+                localStorage.getItem("foodgoCart")
+            ) || [];
+
+
+        /* =========================
+           LIVE LOCATION
+        ========================== */
+
+        let watchId = null;
+
+        let currentLatitude = null;
+
+        let currentLongitude = null;
+
+
+        /* =========================
+           ELEMENTS
+        ========================== */
+
+        const orderItems =
+            document.getElementById(
+                "orderItems"
+            );
+
+
+        const subtotalElement =
+            document.getElementById(
+                "subtotal"
+            );
+
+
+        const totalElement =
+            document.getElementById(
+                "total"
+            );
+
+
+        const errorMessage =
+            document.getElementById(
+                "errorMessage"
+            );
+
+
+        const successMessage =
+            document.getElementById(
+                "successMessage"
+            );
+
+
+        /* =========================
+           ERROR
+        ========================== */
+
+        function showError(message) {
+
+            errorMessage.innerText =
+                message;
+
+            errorMessage.style.display =
+                "block";
+
+            successMessage.style.display =
+                "none";
+
+        }
+
+
+        /* =========================
+           LOAD CUSTOMER
+        ========================== */
+
+        function loadCustomerDetails() {
+
+            const name =
+                localStorage.getItem(
+                    "foodgoCustomerName"
+                );
+
+
+            const mobile =
+                localStorage.getItem(
+                    "foodgoMobile"
+                );
+
+
+            if (name) {
+
+                document.getElementById(
+                    "customerName"
+                ).value = name;
+
+            }
+
+
+            if (mobile) {
+
+                document.getElementById(
+                    "mobile"
+                ).value = mobile;
+
+            }
+
+        }
+
+
+        /* =========================
+           DISPLAY ORDER
+        ========================== */
+
+        function displayOrder() {
+
+            if (cart.length === 0) {
+
+                orderItems.innerHTML = `
+
+                    <p>
+                        Your cart is empty.
+                    </p>
+
+                `;
+
+                document.getElementById(
+                    "placeOrderButton"
+                ).disabled = true;
+
+                return;
+
+            }
+
+
+            let subtotal = 0;
+
+
+            orderItems.innerHTML = "";
+
+
+            cart.forEach(
+                function(item) {
+
+                    const itemTotal =
+                        Number(item.price) *
+                        Number(item.quantity);
+
+
+                    subtotal += itemTotal;
+
+
+                    const div =
+                        document.createElement(
+                            "div"
+                        );
+
+
+                    div.className =
+                        "order-item";
+
+
+                    div.innerHTML = `
+
+                        <div>
+
+                            <div
+                                class="order-item-name"
+                            >
+                                ${item.name}
+                            </div>
+
+                            <div
+                                class="order-item-quantity"
+                            >
+                                Quantity:
+                                ${item.quantity}
+                            </div>
+
+                        </div>
+
+                        <div
+                            class="order-item-price"
+                        >
+                            ₹${itemTotal.toFixed(2)}
+                        </div>
+
+                    `;
+
+
+                    orderItems.appendChild(
+                        div
+                    );
+
+                }
+            );
+
+
+            const deliveryFee =
+                subtotal > 0
+                    ? 40
+                    : 0;
+
+
+            const total =
+                subtotal +
+                deliveryFee;
+
+
+            subtotalElement.innerText =
+                "₹" +
+                subtotal.toFixed(2);
+
+
+            totalElement.innerText =
+                "₹" +
+                total.toFixed(2);
+
+        }
+
+
+        /* =========================
+           PAYMENT SELECTION
+        ========================== */
+
+        const paymentOptions =
+            document.querySelectorAll(
+                ".payment-option"
+            );
+
+
+        paymentOptions.forEach(
+            function(option) {
+
+                option.addEventListener(
+                    "click",
+                    function() {
+
+                        paymentOptions.forEach(
+                            function(item) {
+
+                                item.classList.remove(
+                                    "selected"
+                                );
+
+                            }
+                        );
+
+
+                        option.classList.add(
+                            "selected"
+                        );
+
+                    }
+                );
+
+            }
+        );
+
+
+        /* =========================
+           GET SELECTED PAYMENT
+        ========================== */
+
+        function getPaymentMethod() {
+
+            const selected =
+                document.querySelector(
+                    'input[name="payment"]:checked'
+                );
+
+
+            if (!selected) {
+
+                return "COD";
+
+            }
+
+
+            return selected.value;
+
+        }
+
+
+        /* =========================
+           LOCATION UPDATE
+        ========================== */
+
+        function updateLocation(
+            position
+        ) {
+
+            currentLatitude =
+                position.coords.latitude;
+
+
+            currentLongitude =
+                position.coords.longitude;
+
+
+            const accuracy =
+                Math.round(
+                    position.coords.accuracy
+                );
+
+
+            document.getElementById(
+                "liveStatus"
+            ).innerHTML = `
+
+                <span class="live-dot"></span>
+
+                Live location active
+
+            `;
+
+
+            document.getElementById(
+                "coordinates"
+            ).innerText =
+
+                "Latitude: " +
+                currentLatitude.toFixed(6) +
+
+                " | Longitude: " +
+                currentLongitude.toFixed(6) +
+
+                " | Accuracy: " +
+                accuracy +
+                " m";
+
+
+            /* =========================
+               MAP
+            ========================== */
+
+            const mapPreview =
+                document.getElementById(
+                    "mapPreview"
+                );
+
+
+            const mapFrame =
+                document.getElementById(
+                    "mapFrame"
+                );
+
+
+            const delta = 0.005;
+
+
+            const mapUrl =
+                "https://www.openstreetmap.org/export/embed.html?" +
+                "bbox=" +
+                (
+                    currentLongitude - delta
+                ) +
+                "," +
+                (
+                    currentLatitude - delta
+                ) +
+                "," +
+                (
+                    currentLongitude + delta
+                ) +
+                "," +
+                (
+                    currentLatitude + delta
+                ) +
+                "&layer=mapnik" +
+                "&marker=" +
+                currentLatitude +
+                "," +
+                currentLongitude;
+
+
+            mapFrame.src =
+                mapUrl;
+
+
+            mapPreview.style.display =
+                "block";
+
+        }
+
+
+        /* =========================
+           GET ADDRESS
+        ========================== */
+
+        async function getAddress(
+            latitude,
+            longitude
+        ) {
+
+            try {
+
+                const response =
+                    await fetch(
+
+                        "https://nominatim.openstreetmap.org/reverse" +
+                        "?format=json" +
+                        "&lat=" +
+                        latitude +
+                        "&lon=" +
+                        longitude +
+                        "&zoom=18" +
+                        "&addressdetails=1"
+
+                    );
+
+
+                const data =
+                    await response.json();
+
+
+                if (
+                    data.display_name
+                ) {
+
+                    document.getElementById(
+                        "address"
+                    ).value =
+                        data.display_name;
+
+                }
+
+            }
+
+            catch (error) {
+
+                console.error(
+                    "Address error:",
+                    error
+                );
+
+            }
+
+        }
+
+
+        /* =========================
+           START LIVE LOCATION
+        ========================== */
+
+        function startLiveLocation() {
+
+            if (
+                !navigator.geolocation
+            ) {
+
+                showError(
+                    "Your browser does not support GPS location."
+                );
+
+                return;
+
+            }
+
+
+            const button =
+                document.getElementById(
+                    "locationButton"
+                );
+
+
+            button.innerText =
+                "📍 Finding location...";
+
+
+            navigator.geolocation.getCurrentPosition(
+
+                async function(position) {
+
+                    updateLocation(
+                        position
+                    );
+
+
+                    await getAddress(
+                        position.coords.latitude,
+                        position.coords.longitude
+                    );
+
+
+                    button.innerText =
+                        "✅ Location Added";
+
+                },
+
+
+                function(error) {
+
+                    console.error(
+                        error
+                    );
+
+
+                    showError(
+                        "Please allow location access in your browser."
+                    );
+
+
+                    button.innerText =
+                        "📍 Use My Current Location";
+
+                },
+
+
+                {
+
+                    enableHighAccuracy:
+                        true,
+
+                    timeout:
+                        10000,
+
+                    maximumAge:
+                        0
+
+                }
+
+            );
+
+
+            /*
+                Continue watching the user's
+                location while checkout is open.
+            */
+
+            if (
+                watchId === null
+            ) {
+
+                watchId =
+                    navigator.geolocation.watchPosition(
+
+                        function(position) {
+
+                            updateLocation(
+                                position
+                            );
+
+                        },
+
+
+                        function(error) {
+
+                            console.error(
+                                "Live location error:",
+                                error
+                            );
+
+                        },
+
+
+                        {
+
+                            enableHighAccuracy:
+                                true,
+
+                            maximumAge:
+                                5000,
+
+                            timeout:
+                                10000
+
+                        }
+
+                    );
+
+            }
+
+        }
+
+
+        /* =========================
+           LOCATION BUTTON
+        ========================== */
+
+        document
+            .getElementById(
+                "locationButton"
+            )
+            .addEventListener(
+                "click",
+                startLiveLocation
+            );
+
+
+        /* =========================
+           PLACE ORDER
+        ========================== */
+
+        document
+            .getElementById(
+                "placeOrderButton"
+            )
+            .addEventListener(
+                "click",
+                async function() {
+
+
+                    errorMessage.style.display =
+                        "none";
+
+
+                    const customerName =
+                        document.getElementById(
+                            "customerName"
+                        ).value.trim();
+
+
+                    const mobile =
+                        document.getElementById(
+                            "mobile"
+                        ).value.trim();
+
+
+                    const address =
+                        document.getElementById(
+                            "address"
+                        ).value.trim();
+
+
+                    const paymentMethod =
+                        getPaymentMethod();
+
+
+                    /* =====================
+                       VALIDATION
+                    ====================== */
+
+                    if (!customerName) {
+
+                        showError(
+                            "Please enter your full name."
+                        );
+
+                        return;
+
+                    }
+
+
+                    if (
+                        !/^[0-9]{10}$/.test(
+                            mobile
+                        )
+                    ) {
+
+                        showError(
+                            "Please enter a valid 10-digit mobile number."
+                        );
+
+                        return;
+
+                    }
+
+
+                    if (!address) {
+
+                        showError(
+                            "Please enter your delivery address."
+                        );
+
+                        return;
+
+                    }
+
+
+                    if (
+                        cart.length === 0
+                    ) {
+
+                        showError(
+                            "Your cart is empty."
+                        );
+
+                        return;
+
+                    }
+
+
+                    const customerId =
+                        localStorage.getItem(
+                            "foodgoCustomerId"
+                        );
+
+
+                    if (!customerId) {
+
+                        alert(
+                            "Please login before placing your order."
+                        );
+
+
+                        window.location.href =
+                            "/login/";
+
+                        return;
+
+                    }
+
+
+                    /* =====================
+                       ONLINE PAYMENT
+                    ====================== */
+
+                    if (
+                        paymentMethod ===
+                        "GPAY"
+                    ) {
+
+                        alert(
+                            "Google Pay selected.\n\n" +
+                            "Real Google Pay payment processing " +
+                            "requires a payment gateway integration."
+                        );
+
+                    }
+
+
+                    if (
+                        paymentMethod ===
+                        "PHONEPE"
+                    ) {
+
+                        alert(
+                            "PhonePe selected.\n\n" +
+                            "Real PhonePe payment processing " +
+                            "requires a payment gateway integration."
+                        );
+
+                    }
+
+
+                    /* =====================
+                       BUTTON
+                    ====================== */
+
+                    const button =
+                        document.getElementById(
+                            "placeOrderButton"
+                        );
+
+
+                    button.disabled =
+                        true;
+
+
+                    button.innerText =
+                        "Placing Order...";
+
+
+                    try {
+
+
+                        const items =
+                            cart.map(
+                                function(item) {
+
+                                    return {
+
+                                        food:
+                                            Number(
+                                                item.id
+                                            ),
+
+                                        quantity:
+                                            Number(
+                                                item.quantity
+                                            )
+
+                                    };
+
+                                }
+                            );
+
+
+                        /* =====================
+                           ROUND LOCATION
+                           TO 7 DECIMAL PLACES
+                        ====================== */
+
+                        const orderLatitude =
+                            currentLatitude !== null
+                                ? Number(
+                                    currentLatitude.toFixed(7)
+                                )
+                                : null;
+
+
+                        const orderLongitude =
+                            currentLongitude !== null
+                                ? Number(
+                                    currentLongitude.toFixed(7)
+                                )
+                                : null;
+
+
+                        /* =====================
+                           CURRENT LOCATION
+                        ====================== */
+
+                        console.log(
+                            "Latitude:",
+                            orderLatitude
+                        );
+
+
+                        console.log(
+                            "Longitude:",
+                            orderLongitude
+                        );
+
+
+                        console.log(
+                            "Payment:",
+                            paymentMethod
+                        );
+
+
+                        /* =====================
+                           CREATE ORDER
+                        ===================== */
+
+                        const response =
+                            await fetch(
+                                API_BASE_URL +
+                                "/orders/",
+                                {
+
+                                    method:
+                                        "POST",
+
+                                    headers: {
+
+                                        "Content-Type":
+                                            "application/json"
+
+                                    },
+
+                                    body:
+                                        JSON.stringify({
+
+                                            customer:
+                                                Number(
+                                                    customerId
+                                                ),
+
+                                            customer_name:
+                                                customerName,
+
+                                            mobile:
+                                                mobile,
+
+                                            address:
+                                                address,
+
+                                            payment_method:
+                                                paymentMethod,
+
+                                            /*
+                                             * IMPORTANT:
+                                             * Send maximum 7 decimal places
+                                             */
+
+                                            latitude:
+                                                orderLatitude,
+
+                                            longitude:
+                                                orderLongitude,
+
+                                            estimated_delivery_minutes:
+                                                40,
+
+                                            items:
+                                                items
+
+                                        })
+
+                                }
+                            );
+
+
+                        /* =========================
+                           READ API RESPONSE
+                        ========================== */
+
+                        const data =
+                            await response.json();
+
+
+                        console.log(
+                            "ORDER API STATUS:",
+                            response.status
+                        );
+
+
+                        console.log(
+                            "ORDER API RESPONSE:",
+                            data
+                        );
+
+
+                        /* =========================
+                           SHOW EXACT ERROR
+                        ========================== */
+
+                        if (
+                            !response.ok
+                        ) {
+
+                            let errorText =
+                                "Order could not be placed.";
+
+
+                            if (
+                                typeof data === "object" &&
+                                data !== null
+                            ) {
+
+                                errorText =
+                                    Object.entries(data)
+                                        .map(
+                                            function(
+                                                [field, messages]
+                                            ) {
+
+                                                if (
+                                                    Array.isArray(
+                                                        messages
+                                                    )
+                                                ) {
+
+                                                    return (
+                                                        field +
+                                                        ": " +
+                                                        messages.join(
+                                                            ", "
+                                                        )
+                                                    );
+
+                                                }
+
+
+                                                return (
+                                                    field +
+                                                    ": " +
+                                                    messages
+                                                );
+
+                                            }
+                                        )
+                                        .join("\n");
+
+                            }
+
+
+                            console.error(
+                                "ORDER ERROR:",
+                                data
+                            );
+
+
+                            showError(
+                                "Order Error:\n\n" +
+                                errorText
+                            );
+
+
+                            button.disabled =
+                                false;
+
+
+                            button.innerText =
+                                "Place Order 🚀";
+
+
+                            return;
+
+                        }
+
+
+                        /* =========================
+                           SAVE INFORMATION
+                        ========================== */
+
+                        localStorage.setItem(
+                            "foodgoLastOrderId",
+                            data.id
+                        );
+
+
+                        localStorage.setItem(
+                            "foodgoLastPaymentMethod",
+                            paymentMethod
+                        );
+
+
+                        localStorage.setItem(
+                            "foodgoLastLatitude",
+                            orderLatitude !== null
+                                ? orderLatitude
+                                : ""
+                        );
+
+
+                        localStorage.setItem(
+                            "foodgoLastLongitude",
+                            orderLongitude !== null
+                                ? orderLongitude
+                                : ""
+                        );
+
+
+                        localStorage.removeItem(
+                            "foodgoCart"
+                        );
+
+
+                        /* =========================
+                           STOP LOCATION
+                        ========================== */
+
+                        if (
+                            watchId !== null
+                        ) {
+
+                            navigator
+                                .geolocation
+                                .clearWatch(
+                                    watchId
+                                );
+
+                            watchId = null;
+
+                        }
+
+
+                        /* =========================
+                           SUCCESS
+                        ========================== */
+
+                        alert(
+
+                            "🎉 Order placed successfully!\n\n" +
+
+                            "Order ID: #" +
+                            data.id +
+
+                            "\n\n" +
+
+                            "🚚 Estimated Delivery: " +
+                            "30–40 minutes"
+
+                        );
+
+
+                        window.location.href =
+                            "/orders/";
+
+
+                    }
+
+
+                    catch (error) {
+
+                        console.error(
+                            "Order error:",
+                            error
+                        );
+
+
+                        showError(
+                            "Unable to connect to the FoodGo server. Please try again."
+                        );
+
+
+                        button.disabled =
+                            false;
+
+
+                        button.innerText =
+                            "Place Order 🚀";
+
+                    }
+
+                }
+            );
+
+
+        /* =========================
+           BACK TO CART
+        ========================== */
+
+        document
+            .getElementById(
+                "backCartButton"
+            )
+            .addEventListener(
+                "click",
+                function() {
+
+                    window.location.href =
+                        "/cart/";
+
+                }
+            );
+
+
+        /* =========================
+           START
+        ========================== */
+
+        loadCustomerDetails();
+
+        displayOrder();
+
+
+    </script>
+
+
+</body>
+
+</html>

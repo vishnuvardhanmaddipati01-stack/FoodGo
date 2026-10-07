@@ -1,0 +1,1885 @@
+{% load static %} 
+ 
+<!DOCTYPE html> 
+<html lang="en"> 
+ 
+<head> 
+ 
+    <meta charset="UTF-8"> 
+ 
+    <meta 
+        name="viewport" 
+        content="width=device-width, initial-scale=1.0" 
+    > 
+ 
+    <title>FoodGo - My Orders</title> 
+ 
+    <link 
+        rel="stylesheet" 
+        href="{% static 'style.css' %}" 
+    > 
+ 
+    <style> 
+ 
+        /* ================================= 
+           PAGE 
+        ================================= */ 
+ 
+        body { 
+ 
+            background: 
+                linear-gradient( 
+                    135deg, 
+                    #f0fdf4, 
+                    #ecfdf5, 
+                    #f8fafc 
+                ); 
+ 
+        } 
+ 
+ 
+        .orders-page { 
+ 
+            max-width: 1150px; 
+ 
+            margin: 35px auto; 
+ 
+            padding: 0 20px; 
+ 
+        } 
+ 
+ 
+        /* ================================= 
+           HEADER 
+        ================================= */ 
+ 
+        .orders-hero { 
+ 
+            background: 
+                linear-gradient( 
+                    135deg, 
+                    #064e3b, 
+                    #047857, 
+                    #10b981 
+                ); 
+ 
+            color: white; 
+ 
+            padding: 38px; 
+ 
+            border-radius: 25px; 
+ 
+            margin-bottom: 28px; 
+ 
+            box-shadow: 
+                0 15px 35px 
+                rgba(4,120,87,0.18); 
+ 
+        } 
+ 
+ 
+        .orders-hero h2 { 
+ 
+            margin: 0 0 8px; 
+ 
+            color: white; 
+ 
+            font-size: 34px; 
+ 
+        } 
+ 
+ 
+        .orders-hero p { 
+ 
+            margin: 0; 
+ 
+            color: #d1fae5; 
+ 
+        } 
+ 
+ 
+        /* ================================= 
+           REFRESH BAR 
+        ================================= */ 
+ 
+        .refresh-bar { 
+ 
+            background: white; 
+ 
+            border: 1px solid #d1fae5; 
+ 
+            border-radius: 15px; 
+ 
+            padding: 13px 18px; 
+ 
+            margin-bottom: 22px; 
+ 
+            display: flex; 
+ 
+            justify-content: space-between; 
+ 
+            align-items: center; 
+ 
+            gap: 15px; 
+ 
+            color: #475569; 
+ 
+            font-size: 14px; 
+ 
+        } 
+ 
+ 
+        .refresh-status { 
+ 
+            color: #047857; 
+ 
+            font-weight: 700; 
+ 
+        } 
+ 
+ 
+        .refresh-button { 
+ 
+            border: 1px solid #047857; 
+ 
+            background: #ecfdf5; 
+ 
+            color: #047857; 
+ 
+            padding: 8px 14px; 
+ 
+            border-radius: 8px; 
+ 
+            cursor: pointer; 
+ 
+            font-weight: 700; 
+ 
+        } 
+ 
+ 
+        /* ================================= 
+           ORDER CARD 
+        ================================= */ 
+ 
+        .order-card { 
+ 
+            background: white; 
+ 
+            border-radius: 24px; 
+ 
+            padding: 25px; 
+ 
+            margin-bottom: 25px; 
+ 
+            border: 1px solid #d1fae5; 
+ 
+            box-shadow: 
+                0 10px 30px 
+                rgba(0,80,50,0.08); 
+ 
+        } 
+ 
+ 
+        /* ================================= 
+           ORDER TOP 
+        ================================= */ 
+ 
+        .order-top { 
+ 
+            display: flex; 
+ 
+            justify-content: space-between; 
+ 
+            align-items: center; 
+ 
+            gap: 15px; 
+ 
+            flex-wrap: wrap; 
+ 
+            padding-bottom: 20px; 
+ 
+            border-bottom: 
+                1px solid #e2e8f0; 
+ 
+        } 
+ 
+ 
+        .order-id { 
+ 
+            color: #064e3b; 
+ 
+            font-size: 21px; 
+ 
+            font-weight: 800; 
+ 
+        } 
+ 
+ 
+        .order-date { 
+ 
+            color: #64748b; 
+ 
+            font-size: 13px; 
+ 
+            margin-top: 4px; 
+ 
+        } 
+ 
+ 
+        .status-badge { 
+ 
+            padding: 9px 16px; 
+ 
+            border-radius: 20px; 
+ 
+            background: #dcfce7; 
+ 
+            color: #166534; 
+ 
+            font-size: 13px; 
+ 
+            font-weight: 800; 
+ 
+        } 
+ 
+ 
+        /* ================================= 
+           DELIVERY ESTIMATE 
+        ================================= */ 
+ 
+        .delivery-estimate { 
+ 
+            margin-top: 20px; 
+ 
+            background: 
+                linear-gradient( 
+                    135deg, 
+                    #fff7ed, 
+                    #fffbeb 
+                ); 
+ 
+            border: 1px solid #fed7aa; 
+ 
+            border-radius: 17px; 
+ 
+            padding: 17px; 
+ 
+            display: flex; 
+ 
+            align-items: center; 
+ 
+            gap: 14px; 
+ 
+        } 
+ 
+ 
+        .delivery-icon { 
+ 
+            font-size: 35px; 
+ 
+        } 
+ 
+ 
+        .delivery-estimate strong { 
+ 
+            display: block; 
+ 
+            color: #9a3412; 
+ 
+            font-size: 17px; 
+ 
+        } 
+ 
+ 
+        .delivery-estimate span { 
+ 
+            color: #c2410c; 
+ 
+            font-size: 13px; 
+ 
+        } 
+ 
+ 
+        /* ================================= 
+           TRACKING 
+        ================================= */ 
+ 
+        .tracking-box { 
+ 
+            margin-top: 22px; 
+ 
+            padding: 22px; 
+ 
+            background: 
+                linear-gradient( 
+                    135deg, 
+                    #ecfdf5, 
+                    #f0fdf4 
+                ); 
+ 
+            border: 1px solid #bbf7d0; 
+ 
+            border-radius: 20px; 
+ 
+        } 
+ 
+ 
+        .tracking-title { 
+ 
+            color: #064e3b; 
+ 
+            font-size: 19px; 
+ 
+            font-weight: 800; 
+ 
+            margin-bottom: 25px; 
+ 
+        } 
+ 
+ 
+        .tracking-line { 
+ 
+            display: flex; 
+ 
+            align-items: center; 
+ 
+            width: 100%; 
+ 
+        } 
+ 
+ 
+        .tracking-step { 
+ 
+            flex: 1; 
+ 
+            text-align: center; 
+ 
+            position: relative; 
+ 
+        } 
+ 
+ 
+        .tracking-icon { 
+ 
+            width: 48px; 
+ 
+            height: 48px; 
+ 
+            margin: auto; 
+ 
+            border-radius: 50%; 
+ 
+            display: flex; 
+ 
+            align-items: center; 
+ 
+            justify-content: center; 
+ 
+            background: #dbeafe; 
+ 
+            color: #64748b; 
+ 
+            font-size: 21px; 
+ 
+            transition: 0.3s; 
+ 
+        } 
+ 
+ 
+        .tracking-step.active 
+        .tracking-icon { 
+ 
+            background: #047857; 
+ 
+            color: white; 
+ 
+            box-shadow: 
+                0 0 0 6px 
+                rgba(16,185,129,0.12); 
+ 
+        } 
+ 
+ 
+        .tracking-step.current 
+        .tracking-icon { 
+ 
+            background: #f97316; 
+ 
+            color: white; 
+ 
+            box-shadow: 
+                0 0 0 7px 
+                rgba(249,115,22,0.13); 
+ 
+        } 
+ 
+ 
+        .tracking-step p { 
+ 
+            margin: 9px 0 0; 
+ 
+            font-size: 11px; 
+ 
+            color: #64748b; 
+ 
+        } 
+ 
+ 
+        .tracking-step.active p { 
+ 
+            color: #047857; 
+ 
+            font-weight: 800; 
+ 
+        } 
+ 
+ 
+        .tracking-step.current p { 
+ 
+            color: #ea580c; 
+ 
+            font-weight: 800; 
+ 
+        } 
+ 
+ 
+        .tracking-arrow { 
+ 
+            color: #cbd5e1; 
+ 
+            font-size: 20px; 
+ 
+        } 
+ 
+ 
+        /* ================================= 
+           ORDER INFORMATION 
+        ================================= */ 
+ 
+        .order-information { 
+ 
+            display: grid; 
+ 
+            grid-template-columns: 
+                repeat(3, 1fr); 
+ 
+            gap: 14px; 
+ 
+            margin-top: 22px; 
+ 
+        } 
+ 
+ 
+        .info-box { 
+ 
+            background: #f8fafc; 
+ 
+            padding: 16px; 
+ 
+            border-radius: 14px; 
+ 
+            border: 1px solid #e2e8f0; 
+ 
+        } 
+ 
+ 
+        .info-label { 
+ 
+            color: #64748b; 
+ 
+            font-size: 12px; 
+ 
+            margin-bottom: 6px; 
+ 
+        } 
+ 
+ 
+        .info-value { 
+ 
+            color: #064e3b; 
+ 
+            font-weight: 800; 
+ 
+            font-size: 14px; 
+ 
+            word-break: break-word; 
+ 
+        } 
+ 
+ 
+        /* ================================= 
+           ITEMS 
+        ================================= */ 
+ 
+        .items-section { 
+ 
+            margin-top: 22px; 
+ 
+        } 
+ 
+ 
+        .items-section h4 { 
+ 
+            color: #064e3b; 
+ 
+            margin-bottom: 12px; 
+ 
+        } 
+ 
+ 
+        .order-item { 
+ 
+            display: flex; 
+ 
+            justify-content: space-between; 
+ 
+            align-items: center; 
+ 
+            padding: 13px 0; 
+ 
+            border-bottom: 
+                1px solid #e2e8f0; 
+ 
+        } 
+ 
+ 
+        .order-item:last-child { 
+ 
+            border-bottom: none; 
+ 
+        } 
+ 
+ 
+        .food-name { 
+ 
+            color: #334155; 
+ 
+            font-weight: 700; 
+ 
+        } 
+ 
+ 
+        .food-quantity { 
+ 
+            color: #64748b; 
+ 
+            font-size: 12px; 
+ 
+            margin-top: 3px; 
+ 
+        } 
+ 
+ 
+        .food-price { 
+ 
+            color: #047857; 
+ 
+            font-weight: 800; 
+ 
+        } 
+ 
+ 
+        /* ================================= 
+           TOTAL 
+        ================================= */ 
+ 
+        .total-section { 
+ 
+            margin-top: 20px; 
+ 
+            padding-top: 18px; 
+ 
+            border-top: 
+                1px solid #e2e8f0; 
+ 
+            display: flex; 
+ 
+            justify-content: space-between; 
+ 
+            align-items: center; 
+ 
+        } 
+ 
+ 
+        .total-label { 
+ 
+            color: #475569; 
+ 
+            font-weight: 700; 
+ 
+        } 
+ 
+ 
+        .total-value { 
+ 
+            color: #064e3b; 
+ 
+            font-size: 23px; 
+ 
+            font-weight: 900; 
+ 
+        } 
+ 
+ 
+        /* ================================= 
+           ACTIONS 
+        ================================= */ 
+ 
+        .order-actions { 
+ 
+            display: flex; 
+ 
+            gap: 10px; 
+ 
+            margin-top: 20px; 
+ 
+        } 
+ 
+ 
+        .action-button { 
+ 
+            padding: 11px 18px; 
+ 
+            border-radius: 10px; 
+ 
+            cursor: pointer; 
+ 
+            font-weight: 700; 
+ 
+            text-decoration: none; 
+ 
+            text-align: center; 
+ 
+        } 
+ 
+ 
+        .reorder-button { 
+ 
+            background: #047857; 
+ 
+            color: white; 
+ 
+            border: none; 
+ 
+        } 
+ 
+ 
+        .reorder-button:hover { 
+ 
+            background: #059669; 
+ 
+        } 
+ 
+ 
+        .restaurant-button { 
+ 
+            background: white; 
+ 
+            color: #047857; 
+ 
+            border: 1px solid #047857; 
+ 
+        } 
+ 
+ 
+        /* ================================= 
+           EMPTY 
+        ================================= */ 
+ 
+        .empty-orders { 
+ 
+            background: white; 
+ 
+            text-align: center; 
+ 
+            padding: 70px 20px; 
+ 
+            border-radius: 25px; 
+ 
+            box-shadow: 
+                0 10px 30px 
+                rgba(0,80,50,0.07); 
+ 
+        } 
+ 
+ 
+        .empty-icon { 
+ 
+            font-size: 65px; 
+ 
+            margin-bottom: 15px; 
+ 
+        } 
+ 
+ 
+        .empty-orders h3 { 
+ 
+            color: #064e3b; 
+ 
+        } 
+ 
+ 
+        .shop-button { 
+ 
+            display: inline-block; 
+ 
+            margin-top: 15px; 
+ 
+            padding: 13px 25px; 
+ 
+            background: #047857; 
+ 
+            color: white; 
+ 
+            border-radius: 10px; 
+ 
+            text-decoration: none; 
+ 
+            font-weight: 800; 
+ 
+        } 
+ 
+ 
+        /* ================================= 
+           MOBILE 
+        ================================= */ 
+ 
+        @media (max-width: 750px) { 
+ 
+            .orders-hero { 
+ 
+                padding: 28px 20px; 
+ 
+            } 
+ 
+ 
+            .orders-hero h2 { 
+ 
+                font-size: 28px; 
+ 
+            } 
+ 
+ 
+            .order-information { 
+ 
+                grid-template-columns: 1fr; 
+ 
+            } 
+ 
+ 
+            .tracking-line { 
+ 
+                overflow-x: auto; 
+ 
+                padding-bottom: 10px; 
+ 
+            } 
+ 
+ 
+            .tracking-step { 
+ 
+                min-width: 80px; 
+ 
+            } 
+ 
+ 
+            .tracking-arrow { 
+ 
+                min-width: 20px; 
+ 
+            } 
+ 
+ 
+            .order-actions { 
+ 
+                flex-direction: column; 
+ 
+            } 
+ 
+        } 
+ 
+    </style> 
+ 
+</head> 
+ 
+ 
+<body> 
+ 
+ 
+<!-- ================================= 
+     HEADER 
+================================= --> 
+ 
+<header> 
+ 
+    <a href="/"> 
+ 
+        <img 
+            src="{% static 'foodgo-logo.svg' %}" 
+            class="foodgo-logo" 
+            alt="FoodGo" 
+        > 
+ 
+    </a> 
+ 
+ 
+    <div class="header-links"> 
+ 
+        <a href="/restaurants/"> 
+            Restaurants 
+        </a> 
+ 
+        <a href="/cart/"> 
+            🛒 Cart 
+        </a> 
+ 
+        <a href="/orders/"> 
+            Orders 
+        </a> 
+ 
+        <a href="/profile/"> 
+            Profile 
+        </a> 
+ 
+    </div> 
+ 
+</header> 
+ 
+ 
+ 
+<main class="orders-page"> 
+ 
+ 
+    <!-- ================================= 
+         HERO 
+    ================================== --> 
+ 
+    <section class="orders-hero"> 
+ 
+        <h2> 
+            My Orders 📦 
+        </h2> 
+ 
+        <p> 
+            Track your food from the restaurant 
+            all the way to your doorstep. 
+        </p> 
+ 
+    </section> 
+ 
+ 
+ 
+    <!-- ================================= 
+         REFRESH 
+    ================================== --> 
+ 
+    <div class="refresh-bar"> 
+ 
+        <span> 
+ 
+            <span class="refresh-status"> 
+                ● Live tracking 
+            </span> 
+ 
+            &nbsp; 
+            Order status updates automatically. 
+ 
+        </span> 
+ 
+ 
+        <button 
+            class="refresh-button" 
+            id="refreshButton" 
+            type="button" 
+        > 
+            🔄 Refresh 
+        </button> 
+ 
+    </div> 
+ 
+ 
+ 
+    <!-- ================================= 
+         ORDERS 
+    ================================== --> 
+ 
+    <div id="ordersContainer"> 
+ 
+        <p> 
+            Loading your orders... 
+        </p> 
+ 
+    </div> 
+ 
+ 
+</main> 
+ 
+ 
+ 
+<footer> 
+ 
+    <p> 
+        © 2026 FoodGo 
+    </p> 
+ 
+    <p> 
+        Fresh food. Fast delivery. 💚 
+    </p> 
+ 
+</footer> 
+ 
+ 
+ 
+<script> 
+ 
+const API_BASE_URL = "/api"; 
+ 
+ 
+const ordersContainer = 
+    document.getElementById( 
+        "ordersContainer" 
+    ); 
+ 
+ 
+const refreshButton = 
+    document.getElementById( 
+        "refreshButton" 
+    ); 
+ 
+ 
+const customerId = 
+    localStorage.getItem( 
+        "foodgoCustomerId" 
+    ); 
+ 
+ 
+ 
+/* ================================= 
+   LOAD ORDERS 
+================================= */ 
+ 
+async function loadOrders() { 
+ 
+    refreshButton.innerText = 
+        "⏳ Updating..."; 
+ 
+ 
+    try { 
+ 
+        const response = 
+            await fetch( 
+                API_BASE_URL + 
+                "/orders/" 
+            ); 
+ 
+ 
+        if (!response.ok) { 
+ 
+            throw new Error( 
+                "Unable to load orders" 
+            ); 
+ 
+        } 
+ 
+ 
+        const orders = 
+            await response.json(); 
+ 
+ 
+        const customerOrders = 
+            orders.filter( 
+                function(order) { 
+ 
+                    return String( 
+                        order.customer 
+                    ) === String( 
+                        customerId 
+                    ); 
+ 
+                } 
+            ); 
+ 
+ 
+        if ( 
+            customerOrders.length === 0 
+        ) { 
+ 
+            showEmptyOrders(); 
+ 
+        } 
+        else { 
+ 
+            ordersContainer.innerHTML = 
+                ""; 
+ 
+            customerOrders.forEach( 
+                function(order) { 
+ 
+                    createOrderCard( 
+                        order 
+                    ); 
+ 
+                } 
+            ); 
+ 
+        } 
+ 
+    } 
+ 
+    catch (error) { 
+ 
+        console.error( 
+            error 
+        ); 
+ 
+ 
+        ordersContainer.innerHTML = ` 
+ 
+            <div class="empty-orders"> 
+ 
+                <div class="empty-icon"> 
+                    ⚠️ 
+                </div> 
+ 
+                <h3> 
+                    Unable to load orders 
+                </h3> 
+ 
+                <p> 
+                    Please make sure Django 
+                    is running. 
+                </p> 
+ 
+            </div> 
+ 
+        `; 
+ 
+    } 
+ 
+ 
+    refreshButton.innerText = 
+        "🔄 Refresh"; 
+ 
+} 
+ 
+ 
+ 
+/* ================================= 
+   EMPTY ORDERS 
+================================= */ 
+ 
+function showEmptyOrders() { 
+ 
+    ordersContainer.innerHTML = ` 
+ 
+        <div class="empty-orders"> 
+ 
+            <div class="empty-icon"> 
+                🍽️ 
+            </div> 
+ 
+            <h3> 
+                No Orders Yet 
+            </h3> 
+ 
+            <p> 
+                Your delicious FoodGo journey 
+                starts here. 
+            </p> 
+ 
+            <a 
+                href="/restaurants/" 
+                class="shop-button" 
+            > 
+                Browse Restaurants 
+            </a> 
+ 
+        </div> 
+ 
+    `; 
+ 
+} 
+ 
+ 
+ 
+/* ================================= 
+   CREATE ORDER CARD 
+================================= */ 
+ 
+function createOrderCard(order) { 
+ 
+    const card = 
+        document.createElement( 
+            "div" 
+        ); 
+ 
+ 
+    card.className = 
+        "order-card"; 
+ 
+ 
+    const status = 
+        order.status || "PLACED"; 
+ 
+ 
+    const statusText = 
+        getStatusText( 
+            status 
+        ); 
+ 
+ 
+    const items = 
+        order.order_items || []; 
+ 
+ 
+    const tracking = 
+        getTrackingHTML( 
+            status 
+        ); 
+ 
+ 
+    const delivery = 
+        getDeliveryText( 
+            status 
+        ); 
+ 
+ 
+    let itemsHTML = ""; 
+ 
+ 
+    if (items.length > 0) { 
+ 
+        items.forEach( 
+            function(item) { 
+ 
+                itemsHTML += ` 
+ 
+                    <div 
+                        class="order-item" 
+                    > 
+ 
+                        <div> 
+ 
+                            <div 
+                                class="food-name" 
+                            > 
+                                ${item.food_name} 
+                            </div> 
+ 
+                            <div 
+                                class="food-quantity" 
+                            > 
+                                Quantity: 
+                                ${item.quantity} 
+                            </div> 
+ 
+                        </div> 
+ 
+ 
+                        <div 
+                            class="food-price" 
+                        > 
+                            ₹${Number( 
+                                item.item_total 
+                            ).toFixed(2)} 
+                        </div> 
+ 
+                    </div> 
+ 
+                `; 
+ 
+            } 
+        ); 
+ 
+    } 
+    else { 
+ 
+        itemsHTML = ` 
+            <p> 
+                Order items unavailable. 
+            </p> 
+        `; 
+ 
+    } 
+ 
+ 
+    card.innerHTML = ` 
+ 
+        <!-- ORDER TOP --> 
+ 
+        <div class="order-top"> 
+ 
+            <div> 
+ 
+                <div class="order-id"> 
+ 
+                    Order #${order.id} 
+ 
+                </div> 
+ 
+                <div class="order-date"> 
+ 
+                    ${formatDate( 
+                        order.created_at 
+                    )} 
+ 
+                </div> 
+ 
+            </div> 
+ 
+ 
+            <div class="status-badge"> 
+ 
+                ${statusText} 
+ 
+            </div> 
+ 
+        </div> 
+ 
+ 
+ 
+        <!-- DELIVERY --> 
+ 
+        <div class="delivery-estimate"> 
+ 
+            <div class="delivery-icon"> 
+                🚚 
+            </div> 
+ 
+            <div> 
+ 
+                <strong> 
+                    ${delivery.title} 
+                </strong> 
+ 
+                <span> 
+                    ${delivery.message} 
+                </span> 
+ 
+            </div> 
+ 
+        </div> 
+ 
+ 
+ 
+        <!-- TRACKING --> 
+ 
+        ${tracking} 
+ 
+ 
+ 
+        <!-- INFORMATION --> 
+ 
+        <div class="order-information"> 
+ 
+ 
+            <div class="info-box"> 
+ 
+                <div class="info-label"> 
+                    Customer 
+                </div> 
+ 
+                <div class="info-value"> 
+                    ${order.customer_name} 
+                </div> 
+ 
+            </div> 
+ 
+ 
+            <div class="info-box"> 
+ 
+                <div class="info-label"> 
+                    Payment 
+                </div> 
+ 
+                <div class="info-value"> 
+ 
+                    ${ 
+                        order.payment_method === 
+                        "COD" 
+ 
+                        ? "💵 Cash on Delivery" 
+ 
+                        : "💳 Online Payment" 
+ 
+                    } 
+ 
+                </div> 
+ 
+            </div> 
+ 
+ 
+            <div class="info-box"> 
+ 
+                <div class="info-label"> 
+                    Delivery Address 
+                </div> 
+ 
+                <div class="info-value"> 
+                    ${order.address} 
+ 
+                </div> 
+ 
+            </div> 
+ 
+ 
+        </div> 
+ 
+ 
+ 
+        <!-- ITEMS --> 
+ 
+        <div class="items-section"> 
+ 
+            <h4> 
+                🍴 Ordered Items 
+            </h4> 
+ 
+            ${itemsHTML} 
+ 
+        </div> 
+ 
+ 
+ 
+        <!-- TOTAL --> 
+ 
+        <div class="total-section"> 
+ 
+            <span class="total-label"> 
+                Total Amount 
+            </span> 
+ 
+            <span class="total-value"> 
+                ₹${Number( 
+                    order.total_amount 
+                ).toFixed(2)} 
+ 
+            </span> 
+ 
+        </div> 
+ 
+ 
+ 
+        <!-- ACTIONS --> 
+ 
+        <div class="order-actions"> 
+ 
+            <a 
+                href="/restaurants/" 
+                class="action-button restaurant-button" 
+            > 
+                🍴 Order More 
+            </a> 
+ 
+ 
+            ${ 
+                status === "DELIVERED" 
+ 
+                ? ` 
+ 
+                    <button 
+                        class="action-button reorder-button" 
+                        onclick="reorder(${order.id})" 
+                    > 
+                        🔁 Reorder 
+                    </button> 
+ 
+                ` 
+ 
+                : "" 
+ 
+            } 
+ 
+        </div> 
+ 
+    `; 
+ 
+ 
+    ordersContainer.appendChild( 
+        card 
+    ); 
+ 
+} 
+ 
+ 
+ 
+/* ================================= 
+   TRACKING 
+================================= */ 
+ 
+function getTrackingHTML(status) { 
+ 
+    const steps = [ 
+ 
+        { 
+            status: "PLACED", 
+            icon: "📝", 
+            text: "Placed" 
+        }, 
+ 
+        { 
+            status: "CONFIRMED", 
+            icon: "✅", 
+            text: "Confirmed" 
+        }, 
+ 
+        { 
+            status: "PREPARING", 
+            icon: "👨‍🍳", 
+            text: "Preparing" 
+        }, 
+ 
+        { 
+            status: "OUT_FOR_DELIVERY", 
+            icon: "🚚", 
+            text: "On the Way" 
+        }, 
+ 
+        { 
+            status: "DELIVERED", 
+            icon: "🏠", 
+            text: "Delivered" 
+        } 
+ 
+    ]; 
+ 
+ 
+    const orderStatus = { 
+ 
+        PLACED: 0, 
+ 
+        CONFIRMED: 1, 
+ 
+        PREPARING: 2, 
+ 
+        OUT_FOR_DELIVERY: 3, 
+ 
+        DELIVERED: 4 
+ 
+    }; 
+ 
+ 
+    const current = 
+        orderStatus[status] ?? 0; 
+ 
+ 
+    let html = ` 
+ 
+        <div class="tracking-box"> 
+ 
+            <div class="tracking-title"> 
+ 
+                🚚 Live Order Tracking 
+ 
+            </div> 
+ 
+            <div class="tracking-line"> 
+ 
+    `; 
+ 
+ 
+    steps.forEach( 
+        function(step, index) { 
+ 
+            let className = ""; 
+ 
+ 
+            if ( 
+                index < current 
+            ) { 
+ 
+                className = 
+                    "active"; 
+ 
+            } 
+ 
+ 
+            if ( 
+                index === current 
+            ) { 
+ 
+                className = 
+                    "active current"; 
+ 
+            } 
+ 
+ 
+            html += ` 
+ 
+                <div 
+                    class="tracking-step ${className}" 
+                > 
+ 
+                    <div 
+                        class="tracking-icon" 
+                    > 
+                        ${step.icon} 
+                    </div> 
+ 
+                    <p> 
+                        ${step.text} 
+                    </p> 
+ 
+                </div> 
+ 
+            `; 
+ 
+ 
+            if ( 
+                index < 
+                steps.length - 1 
+            ) { 
+ 
+                html += ` 
+ 
+                    <div 
+                        class="tracking-arrow" 
+                    > 
+                        → 
+                    </div> 
+ 
+                `; 
+ 
+            } 
+ 
+        } 
+    ); 
+ 
+ 
+    html += ` 
+ 
+            </div> 
+ 
+        </div> 
+ 
+    `; 
+ 
+ 
+    return html; 
+ 
+} 
+ 
+ 
+ 
+/* ================================= 
+   DELIVERY TEXT 
+================================= */ 
+ 
+function getDeliveryText(status) { 
+ 
+    const data = { 
+ 
+        PLACED: { 
+ 
+            title: 
+                "Order received", 
+ 
+            message: 
+                "Restaurant will confirm your order shortly." 
+ 
+        }, 
+ 
+        CONFIRMED: { 
+ 
+            title: 
+                "Restaurant confirmed", 
+ 
+            message: 
+                "Your food is being prepared soon." 
+ 
+        }, 
+ 
+        PREPARING: { 
+ 
+            title: 
+                "Your food is being prepared", 
+ 
+            message: 
+                "Our restaurant partner is cooking your order." 
+ 
+        }, 
+ 
+        OUT_FOR_DELIVERY: { 
+ 
+            title: 
+                "Your order is on the way", 
+ 
+            message: 
+                "Our delivery partner is heading to you." 
+ 
+        }, 
+ 
+        DELIVERED: { 
+ 
+            title: 
+                "Order delivered 🎉", 
+ 
+            message: 
+                "Enjoy your delicious FoodGo meal!" 
+ 
+        } 
+ 
+    }; 
+ 
+ 
+    return ( 
+        data[status] 
+        || 
+        data.PLACED 
+    ); 
+ 
+} 
+ 
+ 
+ 
+/* ================================= 
+   STATUS TEXT 
+================================= */ 
+ 
+function getStatusText(status) { 
+ 
+    const statuses = { 
+ 
+        PLACED: 
+            "📝 Order Placed", 
+ 
+        CONFIRMED: 
+            "✅ Confirmed", 
+ 
+        PREPARING: 
+            "👨‍🍳 Preparing", 
+ 
+        OUT_FOR_DELIVERY: 
+            "🚚 Out for Delivery", 
+ 
+        DELIVERED: 
+            "🏠 Delivered", 
+ 
+        CANCELLED: 
+            "❌ Cancelled" 
+ 
+    }; 
+ 
+ 
+    return ( 
+        statuses[status] 
+        || 
+        status 
+    ); 
+ 
+} 
+ 
+ 
+ 
+/* ================================= 
+   DATE 
+================================= */ 
+ 
+function formatDate(dateString) { 
+ 
+    if (!dateString) { 
+ 
+        return ""; 
+ 
+    } 
+ 
+ 
+    const date = 
+        new Date( 
+            dateString 
+        ); 
+ 
+ 
+    return date.toLocaleString( 
+        "en-IN", 
+        { 
+ 
+            day: "2-digit", 
+ 
+            month: "short", 
+ 
+            year: "numeric", 
+ 
+            hour: "2-digit", 
+ 
+            minute: "2-digit" 
+ 
+        } 
+    ); 
+ 
+} 
+ 
+ 
+ 
+/* ================================= 
+   REORDER 
+================================= */ 
+ 
+async function reorder(orderId) { 
+ 
+    try { 
+ 
+        const response = 
+            await fetch( 
+                API_BASE_URL + 
+                "/orders/" + 
+                orderId + 
+                "/" 
+            ); 
+ 
+ 
+        if (!response.ok) { 
+ 
+            throw new Error( 
+                "Unable to get order" 
+            ); 
+ 
+        } 
+ 
+ 
+        const order = 
+            await response.json(); 
+ 
+ 
+        const items = 
+            order.order_items || []; 
+ 
+ 
+        if (items.length === 0) { 
+ 
+            alert( 
+                "Sorry, the items from this order are not available." 
+            ); 
+ 
+            return; 
+ 
+        } 
+ 
+ 
+        let cart = []; 
+ 
+ 
+        items.forEach( 
+            function(item) { 
+ 
+                cart.push({ 
+ 
+                    id: item.food, 
+ 
+                    name: item.food_name, 
+ 
+                    price: Number( 
+                        item.price 
+                    ), 
+ 
+                    quantity: Number( 
+                        item.quantity 
+                    ) 
+ 
+                }); 
+ 
+            } 
+        ); 
+ 
+ 
+        localStorage.setItem( 
+            "foodgoCart", 
+            JSON.stringify(cart) 
+        ); 
+ 
+ 
+        alert( 
+            "🔁 Previous order added to your cart!" 
+        ); 
+ 
+ 
+        window.location.href = 
+            "/cart/"; 
+ 
+    } 
+ 
+    catch (error) { 
+ 
+        console.error( 
+            "Reorder error:", 
+            error 
+        ); 
+ 
+        alert( 
+            "Unable to reorder this order. Please try again." 
+        ); 
+ 
+    } 
+ 
+} 
+ 
+ 
+ 
+/* ================================= 
+   REFRESH BUTTON 
+================================= */ 
+ 
+refreshButton.addEventListener( 
+    "click", 
+    loadOrders 
+); 
+ 
+ 
+ 
+/* ================================= 
+   AUTOMATIC REFRESH 
+================================= */ 
+ 
+setInterval( 
+    loadOrders, 
+    30000 
+); 
+ 
+ 
+ 
+/* ================================= 
+   START 
+================================= */ 
+ 
+if (!customerId) { 
+ 
+    ordersContainer.innerHTML = ` 
+ 
+        <div class="empty-orders"> 
+ 
+            <div class="empty-icon"> 
+                🔐 
+            </div> 
+ 
+            <h3> 
+                Login Required 
+            </h3> 
+ 
+            <p> 
+                Login to see your FoodGo orders. 
+            </p> 
+ 
+            <a 
+                href="/login/" 
+                class="shop-button" 
+            > 
+                Login 
+            </a> 
+ 
+        </div> 
+ 
+    `; 
+ 
+} 
+else { 
+ 
+    loadOrders(); 
+ 
+} 
+ 
+</script> 
+ 
+ 
+</body> 
+ 
+</html>

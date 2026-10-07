@@ -1,0 +1,831 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>FoodGo - Cart</title>
+
+    <link rel="stylesheet"
+          href="{% static 'style.css' %}">
+
+    <style>
+
+        .cart-page {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .cart-header {
+            background: linear-gradient(
+                135deg,
+                #064e3b,
+                #047857,
+                #10b981
+            );
+
+            color: white;
+            padding: 35px;
+            border-radius: 24px;
+            margin-bottom: 30px;
+        }
+
+        .cart-header h2 {
+            margin: 0 0 8px;
+            color: white;
+            font-size: 34px;
+        }
+
+        .cart-header p {
+            margin: 0;
+            color: rgba(255,255,255,0.88);
+        }
+
+        #cartContainer {
+            display: grid;
+            gap: 18px;
+        }
+
+        .cart-item {
+            background: white;
+            border-radius: 18px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            border: 1px solid #e5eee9;
+            box-shadow: 0 8px 22px rgba(0,80,50,0.07);
+        }
+
+        .cart-item-info {
+            flex: 1;
+        }
+
+        .cart-item-info h3 {
+            margin: 0 0 7px;
+            color: #064e3b;
+        }
+
+        .cart-item-info p {
+            margin: 5px 0;
+            color: #64748b;
+        }
+
+        .item-price {
+            color: #047857 !important;
+            font-weight: 800;
+            font-size: 17px;
+        }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .quantity-controls button {
+            width: 36px;
+            height: 36px;
+            border: none;
+            border-radius: 10px;
+            background: #ecfdf5;
+            color: #047857;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .quantity-controls button:hover {
+            background: #d1fae5;
+        }
+
+        .quantity {
+            min-width: 25px;
+            text-align: center;
+            font-weight: 700;
+        }
+
+        .remove-button {
+            border: none;
+            background: #fee2e2;
+            color: #dc2626;
+            padding: 9px 13px;
+            border-radius: 9px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .remove-button:hover {
+            background: #fecaca;
+        }
+
+        .cart-summary {
+            background: white;
+            margin-top: 25px;
+            padding: 25px;
+            border-radius: 20px;
+            border: 1px solid #e5eee9;
+            box-shadow: 0 8px 22px rgba(0,80,50,0.07);
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 12px 0;
+            color: #475569;
+        }
+
+        .summary-total {
+            border-top: 1px solid #e2e8f0;
+            padding-top: 18px;
+            margin-top: 18px;
+            font-size: 22px;
+            font-weight: 800;
+            color: #064e3b;
+        }
+
+        .checkout-button {
+            width: 100%;
+            margin-top: 20px;
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            background: #047857;
+            color: white;
+            font-size: 16px;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .checkout-button:hover {
+            background: #059669;
+        }
+
+        .continue-button {
+            width: 100%;
+            margin-top: 10px;
+            padding: 13px;
+            border: 2px solid #047857;
+            border-radius: 12px;
+            background: white;
+            color: #047857;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .empty-cart {
+            background: white;
+            padding: 60px 20px;
+            text-align: center;
+            border-radius: 22px;
+            border: 1px solid #e5eee9;
+        }
+
+        .empty-cart-icon {
+            font-size: 65px;
+            margin-bottom: 15px;
+        }
+
+        .empty-cart h3 {
+            color: #064e3b;
+            font-size: 24px;
+        }
+
+        .empty-cart p {
+            color: #64748b;
+        }
+
+        @media (max-width: 650px) {
+
+            .cart-item {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .quantity-controls {
+                justify-content: center;
+            }
+
+            .cart-header {
+                padding: 28px 20px;
+            }
+
+            .cart-header h2 {
+                font-size: 28px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- HEADER -->
+
+    <header>
+
+        <a href="/restaurants/">
+
+            <img
+                src="{% static 'foodgo-logo.svg' %}"
+                class="foodgo-logo"
+                alt="FoodGo"
+            >
+
+        </a>
+
+        <div class="header-links">
+
+            <a href="/restaurants/">
+                Restaurants
+            </a>
+
+            <a href="/cart/">
+                🛒 Cart
+            </a>
+
+            <a href="/orders/">
+                Orders
+            </a>
+
+            <a href="/profile/">
+                Profile
+            </a>
+
+        </div>
+
+    </header>
+
+
+    <!-- MAIN -->
+
+    <main class="cart-page">
+
+
+        <section class="cart-header">
+
+            <h2>
+                Your Cart 🛒
+            </h2>
+
+            <p>
+                Review your items before placing your order.
+            </p>
+
+        </section>
+
+
+        <!-- CART ITEMS -->
+
+        <div id="cartContainer">
+
+            <div class="empty-cart">
+
+                <div class="empty-cart-icon">
+                    🛒
+                </div>
+
+                <h3>
+                    Loading your cart...
+                </h3>
+
+            </div>
+
+        </div>
+
+
+        <!-- SUMMARY -->
+
+        <div
+            class="cart-summary"
+            id="cartSummary"
+            style="display:none;"
+        >
+
+            <h3>
+                Order Summary
+            </h3>
+
+            <div class="summary-row">
+
+                <span>
+                    Items
+                </span>
+
+                <span id="itemCount">
+                    0
+                </span>
+
+            </div>
+
+
+            <div class="summary-row">
+
+                <span>
+                    Subtotal
+                </span>
+
+                <span id="subtotal">
+                    ₹0
+                </span>
+
+            </div>
+
+
+            <div class="summary-row">
+
+                <span>
+                    Delivery Fee
+                </span>
+
+                <span id="deliveryFee">
+                    ₹40
+                </span>
+
+            </div>
+
+
+            <div class="summary-row summary-total">
+
+                <span>
+                    Total
+                </span>
+
+                <span id="total">
+                    ₹0
+                </span>
+
+            </div>
+
+
+            <button
+                class="checkout-button"
+                id="checkoutButton"
+                type="button"
+            >
+                Proceed to Checkout →
+            </button>
+
+
+            <button
+                class="continue-button"
+                id="continueButton"
+                type="button"
+            >
+                ← Continue Shopping
+            </button>
+
+        </div>
+
+
+    </main>
+
+
+    <!-- FOOTER -->
+
+    <footer>
+
+        <p>
+            © 2026 FoodGo
+        </p>
+
+        <p>
+            Fresh food. Fast delivery. 💚
+        </p>
+
+    </footer>
+
+
+    <script>
+
+
+        /* =========================
+           CART
+        ========================== */
+
+        let cart =
+            JSON.parse(
+                localStorage.getItem("foodgoCart")
+            ) || [];
+
+
+        const cartContainer =
+            document.getElementById(
+                "cartContainer"
+            );
+
+
+        const cartSummary =
+            document.getElementById(
+                "cartSummary"
+            );
+
+
+        const itemCount =
+            document.getElementById(
+                "itemCount"
+            );
+
+
+        const subtotalElement =
+            document.getElementById(
+                "subtotal"
+            );
+
+
+        const deliveryElement =
+            document.getElementById(
+                "deliveryFee"
+            );
+
+
+        const totalElement =
+            document.getElementById(
+                "total"
+            );
+
+
+
+        /* =========================
+           DISPLAY CART
+        ========================== */
+
+        function displayCart() {
+
+
+            cartContainer.innerHTML = "";
+
+
+            if (cart.length === 0) {
+
+                cartSummary.style.display =
+                    "none";
+
+
+                cartContainer.innerHTML = `
+
+                    <div class="empty-cart">
+
+                        <div class="empty-cart-icon">
+                            🛒
+                        </div>
+
+                        <h3>
+                            Your cart is empty
+                        </h3>
+
+                        <p>
+                            Add some delicious food
+                            from our restaurants.
+                        </p>
+
+                        <button
+                            class="checkout-button"
+                            onclick="
+                                window.location.href='/restaurants/'
+                            "
+                        >
+                            Explore Restaurants →
+                        </button>
+
+                    </div>
+
+                `;
+
+                return;
+
+            }
+
+
+            cart.forEach(
+                function(item, index) {
+
+
+                    const itemTotal =
+                        Number(item.price) *
+                        Number(item.quantity);
+
+
+                    const card =
+                        document.createElement(
+                            "div"
+                        );
+
+
+                    card.className =
+                        "cart-item";
+
+
+                    card.innerHTML = `
+
+                        <div
+                            class="cart-item-info"
+                        >
+
+                            <h3>
+                                ${item.name}
+                            </h3>
+
+                            <p class="item-price">
+                                ₹${Number(item.price).toFixed(2)}
+                                each
+                            </p>
+
+                            <p>
+                                Item total:
+                                ₹${itemTotal.toFixed(2)}
+                            </p>
+
+                        </div>
+
+
+                        <div
+                            class="quantity-controls"
+                        >
+
+                            <button
+                                type="button"
+                                onclick="
+                                    decreaseQuantity(${index})
+                                "
+                            >
+                                −
+                            </button>
+
+
+                            <span class="quantity">
+                                ${item.quantity}
+                            </span>
+
+
+                            <button
+                                type="button"
+                                onclick="
+                                    increaseQuantity(${index})
+                                "
+                            >
+                                +
+                            </button>
+
+                        </div>
+
+
+                        <button
+                            class="remove-button"
+                            type="button"
+                            onclick="
+                                removeItem(${index})
+                            "
+                        >
+                            Remove
+                        </button>
+
+                    `;
+
+
+                    cartContainer.appendChild(
+                        card
+                    );
+
+                }
+            );
+
+
+            updateSummary();
+
+        }
+
+
+
+        /* =========================
+           INCREASE
+        ========================== */
+
+        function increaseQuantity(index) {
+
+            cart[index].quantity++;
+
+            saveCart();
+
+        }
+
+
+
+        /* =========================
+           DECREASE
+        ========================== */
+
+        function decreaseQuantity(index) {
+
+            if (
+                cart[index].quantity > 1
+            ) {
+
+                cart[index].quantity--;
+
+            }
+            else {
+
+                cart.splice(index, 1);
+
+            }
+
+
+            saveCart();
+
+        }
+
+
+
+        /* =========================
+           REMOVE
+        ========================== */
+
+        function removeItem(index) {
+
+            const itemName =
+                cart[index].name;
+
+
+            const confirmRemove =
+                confirm(
+                    "Remove " +
+                    itemName +
+                    " from your cart?"
+                );
+
+
+            if (!confirmRemove) {
+
+                return;
+
+            }
+
+
+            cart.splice(index, 1);
+
+            saveCart();
+
+        }
+
+
+
+        /* =========================
+           SAVE CART
+        ========================== */
+
+        function saveCart() {
+
+            localStorage.setItem(
+                "foodgoCart",
+                JSON.stringify(cart)
+            );
+
+
+            displayCart();
+
+        }
+
+
+
+        /* =========================
+           SUMMARY
+        ========================== */
+
+        function updateSummary() {
+
+
+            let subtotal = 0;
+
+            let count = 0;
+
+
+            cart.forEach(
+                function(item) {
+
+                    subtotal +=
+                        Number(item.price) *
+                        Number(item.quantity);
+
+                    count +=
+                        Number(item.quantity);
+
+                }
+            );
+
+
+            const deliveryFee =
+                subtotal > 0
+                    ? 40
+                    : 0;
+
+
+            const total =
+                subtotal +
+                deliveryFee;
+
+
+            itemCount.innerText =
+                count;
+
+
+            subtotalElement.innerText =
+                "₹" +
+                subtotal.toFixed(2);
+
+
+            deliveryElement.innerText =
+                "₹" +
+                deliveryFee.toFixed(2);
+
+
+            totalElement.innerText =
+                "₹" +
+                total.toFixed(2);
+
+
+            cartSummary.style.display =
+                "block";
+
+        }
+
+
+
+        /* =========================
+           CHECKOUT
+        ========================== */
+
+        document
+            .getElementById(
+                "checkoutButton"
+            )
+            .addEventListener(
+                "click",
+                function() {
+
+                    if (
+                        cart.length === 0
+                    ) {
+
+                        alert(
+                            "Your cart is empty."
+                        );
+
+                        return;
+
+                    }
+
+
+                    window.location.href =
+                        "/checkout/";
+
+                }
+            );
+
+
+
+        /* =========================
+           CONTINUE SHOPPING
+        ========================== */
+
+        document
+            .getElementById(
+                "continueButton"
+            )
+            .addEventListener(
+                "click",
+                function() {
+
+                    window.location.href =
+                        "/restaurants/";
+
+                }
+            );
+
+
+
+        /* =========================
+           START
+        ========================== */
+
+        displayCart();
+
+    </script>
+
+
+</body>
+
+</html>

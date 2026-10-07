@@ -1,0 +1,140 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>FoodGo - Food Delivery</title>
+
+    <link rel="stylesheet"
+        href="{% static 'style.css' %}">
+
+</head>
+
+<body>
+
+    <!-- HEADER -->
+
+    <header>
+
+        <h1>🍔 FoodGo</h1>
+
+        <div class="header-links">
+
+            <a href="/restaurants/">
+                Restaurants
+            </a>
+
+            <a href="/cart/">
+                🛒 Cart
+            </a>
+
+            <a href="/orders/">
+                Orders
+            </a>
+
+            <a href="/profile/">
+                Profile
+            </a>
+
+        </div>
+
+    </header>
+
+
+    <!-- MAIN CONTENT -->
+
+    <main>
+
+        <!-- HERO SECTION -->
+
+        <section class="hero">
+
+            <h2>
+                Delicious Food,
+                Delivered Fast 🚀
+            </h2>
+
+            <p>
+                Order your favourite food
+                from the best restaurants.
+            </p>
+
+            <button
+                onclick="window.location.href='/restaurants/'">
+
+                Order Now
+
+            </button>
+
+        </section>
+
+
+        <!-- CATEGORIES -->
+
+        <section>
+
+            <h2>
+                What are you craving?
+            </h2>
+
+            <div id="categoryContainer">
+
+                <p>
+                    Loading categories...
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- RESTAURANTS -->
+
+        <section>
+
+            <h2>
+                Popular Restaurants
+            </h2>
+
+            <div id="restaurantContainer">
+
+                <p>
+                    Loading restaurants...
+                </p>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- FOOTER -->
+
+    <footer>
+
+        <p>
+            © 2026 FoodGo
+        </p>
+
+        <p>
+            Your food, your way.
+        </p>
+
+    </footer>
+
+
+    <!-- JAVASCRIPT -->
+
+    <script src="{% static 'script.js' %}"></script>
+
+</body>
+
+</html>

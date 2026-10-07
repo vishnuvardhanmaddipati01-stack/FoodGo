@@ -1,0 +1,792 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>FoodGo - Restaurant Menu</title>
+
+    <link rel="stylesheet"
+          href="{% static 'style.css' %}">
+
+    <style>
+
+        /* =========================
+           MENU PAGE
+        ========================== */
+
+        .restaurant-menu-header {
+            background: linear-gradient(
+                135deg,
+                #064e3b,
+                #047857,
+                #10b981
+            );
+
+            color: white;
+
+            padding: 35px;
+
+            border-radius: 24px;
+
+            margin-bottom: 30px;
+
+            box-shadow:
+                0 15px 35px
+                rgba(4,120,87,0.15);
+        }
+
+        .restaurant-menu-header p {
+            color: rgba(255,255,255,0.88);
+        }
+
+        .restaurant-menu-header h2 {
+            color: white;
+            margin: 5px 0;
+            font-size: 34px;
+        }
+
+
+        /* =========================
+           MENU GRID
+        ========================== */
+
+        .menu-container {
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    auto-fit,
+                    minmax(260px, 1fr)
+                );
+
+            gap: 24px;
+
+            align-items: stretch;
+        }
+
+
+        /* =========================
+           FOOD CARD
+        ========================== */
+
+        .food-card {
+            background: white;
+
+            border-radius: 20px;
+
+            overflow: hidden;
+
+            border: 1px solid #e5eee9;
+
+            box-shadow:
+                0 8px 24px
+                rgba(0,80,50,0.08);
+
+            display: flex;
+
+            flex-direction: column;
+
+            min-width: 0;
+
+            transition:
+                transform 0.2s ease,
+                box-shadow 0.2s ease;
+        }
+
+        .food-card:hover {
+            transform: translateY(-5px);
+
+            box-shadow:
+                0 15px 30px
+                rgba(0,80,50,0.13);
+        }
+
+
+        /* =========================
+           FOOD IMAGE
+        ========================== */
+
+        .food-card > img {
+            width: 100%;
+
+            height: 190px;
+
+            object-fit: cover;
+
+            display: block;
+
+            background: #ecfdf5;
+        }
+
+
+        /* =========================
+           FOOD CONTENT
+        ========================== */
+
+        .food-card-content {
+            padding: 18px;
+
+            display: flex;
+
+            flex-direction: column;
+
+            flex: 1;
+        }
+
+        .food-card-content h3 {
+            margin: 0 0 8px;
+
+            color: #064e3b;
+
+            font-size: 19px;
+        }
+
+        .food-card-content > p {
+            color: #64748b;
+
+            font-size: 14px;
+
+            line-height: 1.5;
+
+            min-height: 42px;
+
+            margin: 0;
+        }
+
+
+        /* =========================
+           ADD TO CART
+        ========================== */
+
+        .add-cart-button {
+            width: 100%;
+
+            padding: 12px;
+
+            border: none;
+
+            border-radius: 10px;
+
+            background: #047857;
+
+            color: white;
+
+            font-size: 14px;
+
+            font-weight: 700;
+
+            cursor: pointer;
+
+            transition:
+                background 0.2s ease,
+                transform 0.2s ease;
+        }
+
+        .add-cart-button:hover {
+            background: #059669;
+
+            transform: translateY(-1px);
+        }
+
+
+        /* =========================
+           EMPTY / LOADING
+        ========================== */
+
+        .empty-message {
+            grid-column: 1 / -1;
+
+            text-align: center;
+
+            background: white;
+
+            padding: 50px 25px;
+
+            border-radius: 20px;
+
+            color: #64748b;
+
+            border: 1px solid #e5eee9;
+        }
+
+        .empty-message h3 {
+            color: #064e3b;
+        }
+
+
+        /* =========================
+           MOBILE
+        ========================== */
+
+        @media (max-width: 600px) {
+
+            .restaurant-menu-header {
+                padding: 25px 20px;
+            }
+
+            .restaurant-menu-header h2 {
+                font-size: 27px;
+            }
+
+            .menu-container {
+                grid-template-columns: 1fr;
+            }
+
+            .food-card > img {
+                height: 200px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =========================
+         HEADER
+    ========================== -->
+
+    <header>
+
+        <a href="/restaurants/">
+
+            <img
+                src="{% static 'foodgo-logo.svg' %}"
+                class="foodgo-logo"
+                alt="FoodGo"
+            >
+
+        </a>
+
+        <div class="header-links">
+
+            <a href="/restaurants/">
+                Restaurants
+            </a>
+
+            <a href="/cart/">
+                🛒 Cart
+            </a>
+
+            <a href="/orders/">
+                Orders
+            </a>
+
+            <a href="/profile/">
+                Profile
+            </a>
+
+        </div>
+
+    </header>
+
+
+    <!-- =========================
+         MAIN
+    ========================== -->
+
+    <main>
+
+        <section class="restaurant-menu-header">
+
+            <p style="
+                color:#d1fae5;
+                font-weight:700;
+                margin-bottom:8px;
+            ">
+                🍽️ RESTAURANT MENU
+            </p>
+
+            <h2 id="restaurantName">
+                Loading...
+            </h2>
+
+            <p style="
+                color:rgba(255,255,255,0.88);
+                margin-top:8px;
+            ">
+                Choose your favourite food
+                and add it to your cart.
+            </p>
+
+        </section>
+
+
+        <!-- =========================
+             FOOD CONTAINER
+        ========================== -->
+
+        <div
+            id="foodContainer"
+            class="menu-container"
+        >
+
+            <div class="empty-message">
+
+                <div style="font-size:40px;">
+                    🍽️
+                </div>
+
+                <p>
+                    Loading menu...
+                </p>
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <!-- =========================
+         FOOTER
+    ========================== -->
+
+    <footer>
+
+        <p>
+            © 2026 FoodGo
+        </p>
+
+        <p>
+            Fresh food. Fast delivery. 💚
+        </p>
+
+    </footer>
+
+
+    <!-- =========================
+         JAVASCRIPT
+    ========================== -->
+
+    <script>
+
+        const API_BASE_URL = "/api";
+
+
+        /* =========================
+           SELECTED RESTAURANT
+        ========================== */
+
+        const restaurantId =
+            localStorage.getItem(
+                "selectedRestaurantId"
+            );
+
+        const restaurantName =
+            localStorage.getItem(
+                "selectedRestaurantName"
+            );
+
+
+        const restaurantTitle =
+            document.getElementById(
+                "restaurantName"
+            );
+
+
+        restaurantTitle.textContent =
+            restaurantName ||
+            "Restaurant Menu";
+
+
+        /* =========================
+           CHECK RESTAURANT
+        ========================== */
+
+        if (!restaurantId) {
+
+            document.getElementById(
+                "foodContainer"
+            ).innerHTML = `
+
+                <div class="empty-message">
+
+                    <div style="font-size:45px;">
+                        ⚠️
+                    </div>
+
+                    <h3>
+                        Restaurant not selected
+                    </h3>
+
+                    <p>
+                        Please go back and select
+                        a restaurant.
+                    </p>
+
+                    <br>
+
+                    <button
+                        class="add-cart-button"
+                        type="button"
+                        onclick="window.location.href='/restaurants/'"
+                    >
+                        ← Back to Restaurants
+                    </button>
+
+                </div>
+
+            `;
+
+        }
+
+
+        /* =========================
+           LOAD FOOD
+        ========================== */
+
+        async function loadFoodItems() {
+
+            const container =
+                document.getElementById(
+                    "foodContainer"
+                );
+
+            try {
+
+                const response =
+                    await fetch(
+                        API_BASE_URL +
+                        "/foods/",
+                        {
+                            method: "GET",
+                            cache: "no-store"
+                        }
+                    );
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        "Unable to load food items"
+                    );
+
+                }
+
+                const foods =
+                    await response.json();
+
+
+                const restaurantFoods =
+                    foods.filter(
+                        function(food) {
+
+                            return String(
+                                food.restaurant
+                            ) === String(
+                                restaurantId
+                            );
+
+                        }
+                    );
+
+
+                /* =========================
+                   CLEAR ONCE
+                ========================== */
+
+                container.innerHTML = "";
+
+
+                /* =========================
+                   NO FOOD
+                ========================== */
+
+                if (
+                    restaurantFoods.length === 0
+                ) {
+
+                    container.innerHTML = `
+
+                        <div class="empty-message">
+
+                            <div style="font-size:45px;">
+                                🍽️
+                            </div>
+
+                            <h3>
+                                No food items available
+                            </h3>
+
+                            <p>
+                                This restaurant currently
+                                has no available food.
+                            </p>
+
+                        </div>
+
+                    `;
+
+                    return;
+
+                }
+
+
+                /* =========================
+                   CREATE CARDS
+                ========================== */
+
+                restaurantFoods.forEach(
+                    function(food) {
+
+                        const card =
+                            document.createElement(
+                                "div"
+                            );
+
+                        card.className =
+                            "food-card";
+
+
+                        const image =
+                            food.image &&
+                            food.image.trim() !== ""
+                                ? food.image
+                                : "https://via.placeholder.com/600x400?text=FoodGo";
+
+
+                        card.innerHTML = `
+
+                            <img
+                                src="${image}"
+                                alt="${food.name}"
+                                loading="lazy"
+                            >
+
+                            <div
+                                class="food-card-content"
+                            >
+
+                                <h3>
+                                    ${food.name}
+                                </h3>
+
+                                <p>
+                                    ${
+                                        food.description ||
+                                        "Delicious food prepared fresh for you."
+                                    }
+                                </p>
+
+                                <div style="
+                                    display:flex;
+                                    justify-content:space-between;
+                                    align-items:center;
+                                    margin-top:15px;
+                                    gap:10px;
+                                ">
+
+                                    <strong style="
+                                        font-size:20px;
+                                        color:#047857;
+                                    ">
+                                        ₹${food.price}
+                                    </strong>
+
+                                    <span style="
+                                        font-size:12px;
+                                        padding:6px 9px;
+                                        border-radius:20px;
+                                        background:${
+                                            food.is_vegetarian
+                                            ? "#dcfce7"
+                                            : "#fee2e2"
+                                        };
+                                        color:${
+                                            food.is_vegetarian
+                                            ? "#166534"
+                                            : "#dc2626"
+                                        };
+                                        font-weight:700;
+                                    ">
+
+                                        ${
+                                            food.is_vegetarian
+                                            ? "🟢 Veg"
+                                            : "🔴 Non-Veg"
+                                        }
+
+                                    </span>
+
+                                </div>
+
+                                <button
+                                    class="add-cart-button"
+                                    type="button"
+                                >
+                                    🛒 Add to Cart
+                                </button>
+
+                            </div>
+
+                        `;
+
+
+                        /* =========================
+                           ADD BUTTON
+                        ========================== */
+
+                        const button =
+                            card.querySelector(
+                                ".add-cart-button"
+                            );
+
+
+                        button.addEventListener(
+                            "click",
+                            function() {
+
+                                addToCart(
+                                    food.id,
+                                    food.name,
+                                    food.price
+                                );
+
+                            }
+                        );
+
+
+                        container.appendChild(
+                            card
+                        );
+
+                    }
+                );
+
+            }
+
+            catch (error) {
+
+                console.error(
+                    "Food loading error:",
+                    error
+                );
+
+                container.innerHTML = `
+
+                    <div class="empty-message">
+
+                        <div style="font-size:45px;">
+                            ⚠️
+                        </div>
+
+                        <h3>
+                            Unable to load menu
+                        </h3>
+
+                        <p>
+                            Please make sure Django
+                            is running.
+                        </p>
+
+                    </div>
+
+                `;
+
+            }
+
+        }
+
+
+        /* =========================
+           ADD TO CART
+        ========================== */
+
+        function addToCart(
+            id,
+            name,
+            price
+        ) {
+
+            let cart =
+                JSON.parse(
+                    localStorage.getItem(
+                        "foodgoCart"
+                    )
+                ) || [];
+
+
+            const existingItem =
+                cart.find(
+                    function(item) {
+
+                        return Number(item.id) ===
+                               Number(id);
+
+                    }
+                );
+
+
+            if (existingItem) {
+
+                existingItem.quantity += 1;
+
+            }
+
+            else {
+
+                cart.push({
+
+                    id: id,
+
+                    name: name,
+
+                    price: Number(price),
+
+                    quantity: 1
+
+                });
+
+            }
+
+
+            localStorage.setItem(
+                "foodgoCart",
+                JSON.stringify(cart)
+            );
+
+
+            const goToCart =
+                confirm(
+                    name +
+                    " added to cart! 🛒\n\n" +
+                    "Do you want to view your cart?"
+                );
+
+
+            if (goToCart) {
+
+                window.location.href =
+                    "/cart/";
+
+            }
+
+        }
+
+
+        /* =========================
+           START
+        ========================== */
+
+        if (restaurantId) {
+
+            loadFoodItems();
+
+        }
+
+    </script>
+
+</body>
+
+</html>
