@@ -1,187 +1,1544 @@
-<script>
+{% load static %}
 
-    const API_BASE_URL = "/api";
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
 
-    const mobileInput =
-        document.getElementById("mobile");
+    <meta charset="UTF-8">
 
-    const otpInput =
-        document.getElementById("otp");
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
-    const otpSection =
-        document.getElementById("otpSection");
+    <title>FoodGo - Login</title>
 
-    const sendOtpButton =
-        document.getElementById("sendOtpButton");
+    <link rel="stylesheet"
+          href="{% static 'style.css' %}">
 
-    const verifyOtpButton =
-        document.getElementById("verifyOtpButton");
+    <style>
 
-    const message =
-        document.getElementById("loginMessage");
-
-
-    let currentMobile = "";
-
-
-    /* ================================
-       SEND OTP
-    ================================= */
-
-    sendOtpButton.addEventListener(
-        "click",
-        function() {
-
-            const mobile =
-                mobileInput.value.trim();
-
-
-            if (!/^[0-9]{10}$/.test(mobile)) {
-
-                message.textContent =
-                    "Please enter a valid 10-digit mobile number.";
-
-                message.style.color =
-                    "#dc2626";
-
-                return;
-            }
-
-
-            currentMobile = mobile;
-
-
-            message.textContent =
-                "OTP sent successfully. For demo login, use 123456.";
-
-            message.style.color =
-                "#059669";
-
-
-            otpSection.style.display =
-                "block";
-
-
-            sendOtpButton.style.display =
-                "none";
-
-
-            otpInput.focus();
-
+        * {
+            box-sizing: border-box;
         }
-    );
+
+        body.login-page {
+
+            margin: 0;
+
+            min-height: 100vh;
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            background:
+                radial-gradient(
+                    circle at 10% 10%,
+                    rgba(110, 231, 183, 0.35),
+                    transparent 28%
+                ),
+
+                radial-gradient(
+                    circle at 90% 90%,
+                    rgba(52, 211, 153, 0.28),
+                    transparent 30%
+                ),
+
+                linear-gradient(
+                    135deg,
+                    #022c22,
+                    #065f46,
+                    #059669
+                );
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            padding: 30px 20px;
+
+            position: relative;
+
+            overflow-x: hidden;
+        }
 
 
-    /* ================================
-       VERIFY OTP
-    ================================= */
+        /* =================================
+           BACKGROUND DECORATION
+        ================================= */
 
-    verifyOtpButton.addEventListener(
-        "click",
-        async function() {
+        .background-food {
 
-            const otp =
-                otpInput.value.trim();
+            position: absolute;
+
+            font-size: 55px;
+
+            opacity: 0.09;
+
+            pointer-events: none;
+
+            user-select: none;
+        }
+
+        .food-1 {
+            top: 7%;
+            left: 5%;
+            transform: rotate(-15deg);
+        }
+
+        .food-2 {
+            top: 18%;
+            right: 6%;
+            transform: rotate(15deg);
+        }
+
+        .food-3 {
+            bottom: 12%;
+            left: 8%;
+            transform: rotate(12deg);
+        }
+
+        .food-4 {
+            bottom: 8%;
+            right: 8%;
+            transform: rotate(-12deg);
+        }
+
+        .food-5 {
+            top: 48%;
+            left: 2%;
+        }
+
+        .food-6 {
+            top: 52%;
+            right: 2%;
+        }
 
 
-            if (otp !== "123456") {
+        /* =================================
+           MAIN CARD
+        ================================= */
 
-                message.textContent =
-                    "Invalid OTP. For demo use 123456.";
+        .login-wrapper {
 
-                message.style.color =
-                    "#dc2626";
+            width: 100%;
+
+            max-width: 1080px;
+
+            min-height: 650px;
+
+            display: grid;
+
+            grid-template-columns: 1.05fr 0.95fr;
+
+            background: rgba(
+                255,
+                255,
+                255,
+                0.97
+            );
+
+            border-radius: 30px;
+
+            overflow: hidden;
+
+            box-shadow:
+                0 35px 90px
+                rgba(0, 0, 0, 0.30);
+
+            position: relative;
+
+            z-index: 2;
+        }
+
+
+        /* =================================
+           LEFT SIDE
+        ================================= */
+
+        .login-left {
+
+            position: relative;
+
+            overflow: hidden;
+
+            padding: 55px;
+
+            color: white;
+
+            display: flex;
+
+            flex-direction: column;
+
+            justify-content: center;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #022c22,
+                    #065f46,
+                    #059669
+                );
+        }
+
+        .login-left::before {
+
+            content: "";
+
+            position: absolute;
+
+            width: 420px;
+
+            height: 420px;
+
+            border-radius: 50%;
+
+            background:
+                rgba(
+                    167,
+                    243,
+                    208,
+                    0.10
+                );
+
+            top: -210px;
+
+            right: -160px;
+        }
+
+        .login-left::after {
+
+            content: "";
+
+            position: absolute;
+
+            width: 320px;
+
+            height: 320px;
+
+            border-radius: 50%;
+
+            background:
+                rgba(
+                    110,
+                    231,
+                    183,
+                    0.09
+                );
+
+            bottom: -160px;
+
+            left: -140px;
+        }
+
+
+        .brand {
+
+            position: relative;
+
+            z-index: 2;
+        }
+
+
+        .logo-icon {
+
+            width: 88px;
+
+            height: 88px;
+
+            border-radius: 26px;
+
+            background:
+                rgba(
+                    255,
+                    255,
+                    255,
+                    0.14
+                );
+
+            border:
+                1px solid
+                rgba(
+                    255,
+                    255,
+                    255,
+                    0.25
+                );
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 48px;
+
+            margin-bottom: 22px;
+
+            box-shadow:
+                0 15px 35px
+                rgba(0, 0, 0, 0.15);
+        }
+
+
+        .brand h1 {
+
+            margin: 0;
+
+            font-size: 52px;
+
+            letter-spacing: -2px;
+
+            font-weight: 800;
+        }
+
+
+        .brand h2 {
+
+            margin:
+                14px 0 15px;
+
+            font-size: 27px;
+
+            line-height: 1.25;
+
+            font-weight: 600;
+        }
+
+
+        .brand-description {
+
+            margin: 0;
+
+            max-width: 420px;
+
+            font-size: 16px;
+
+            line-height: 1.7;
+
+            color:
+                rgba(
+                    255,
+                    255,
+                    255,
+                    0.80
+                );
+        }
+
+
+        /* =================================
+           FEATURES
+        ================================= */
+
+        .features {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 14px;
+
+            margin-top: 34px;
+
+            position: relative;
+
+            z-index: 2;
+        }
+
+
+        .feature {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 13px;
+
+            font-size: 15px;
+
+            color:
+                rgba(
+                    255,
+                    255,
+                    255,
+                    0.94
+                );
+        }
+
+
+        .feature-icon {
+
+            width: 42px;
+
+            height: 42px;
+
+            flex-shrink: 0;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            border-radius: 13px;
+
+            background:
+                rgba(
+                    255,
+                    255,
+                    255,
+                    0.12
+                );
+
+            border:
+                1px solid
+                rgba(
+                    255,
+                    255,
+                    255,
+                    0.15
+                );
+
+            font-size: 20px;
+        }
+
+
+        /* =================================
+           RIGHT SIDE
+        ================================= */
+
+        .login-right {
+
+            padding: 55px 60px;
+
+            display: flex;
+
+            flex-direction: column;
+
+            justify-content: center;
+
+            background: #ffffff;
+        }
+
+
+        .login-badge {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 7px;
+
+            width: fit-content;
+
+            padding:
+                7px 12px;
+
+            border-radius: 30px;
+
+            background: #ecfdf5;
+
+            color: #047857;
+
+            font-size: 12px;
+
+            font-weight: 700;
+
+            margin-bottom: 16px;
+        }
+
+
+        .login-title {
+
+            margin: 0;
+
+            color: #064e3b;
+
+            font-size: 34px;
+
+            font-weight: 800;
+
+            letter-spacing: -0.7px;
+        }
+
+
+        .welcome-text {
+
+            margin:
+                9px 0 30px;
+
+            color: #6b7280;
+
+            font-size: 15px;
+
+            line-height: 1.6;
+        }
+
+
+        /* =================================
+           INPUT GROUP
+        ================================= */
+
+        .input-group {
+
+            margin-bottom: 19px;
+        }
+
+
+        .input-group label {
+
+            display: block;
+
+            margin-bottom: 8px;
+
+            color: #374151;
+
+            font-size: 14px;
+
+            font-weight: 700;
+        }
+
+
+        .input-box {
+
+            display: flex;
+
+            align-items: center;
+
+            width: 100%;
+
+            border:
+                2px solid #e5e7eb;
+
+            border-radius: 14px;
+
+            overflow: hidden;
+
+            background: #ffffff;
+
+            transition:
+                border-color 0.25s,
+                box-shadow 0.25s;
+        }
+
+
+        .input-box:focus-within {
+
+            border-color: #10b981;
+
+            box-shadow:
+                0 0 0 4px
+                rgba(
+                    16,
+                    185,
+                    129,
+                    0.12
+                );
+        }
+
+
+        .country-code {
+
+            padding:
+                15px 15px;
+
+            background: #ecfdf5;
+
+            color: #047857;
+
+            font-weight: 700;
+
+            border-right:
+                1px solid #d1fae5;
+        }
+
+
+        .input-box input {
+
+            flex: 1;
+
+            min-width: 0;
+
+            border: none;
+
+            outline: none;
+
+            padding: 15px;
+
+            font-size: 16px;
+
+            color: #111827;
+
+            background: transparent;
+        }
+
+
+        .input-box input::placeholder {
+
+            color: #9ca3af;
+        }
+
+
+        /* =================================
+           PASSWORD
+        ================================= */
+
+        .password-box {
+
+            position: relative;
+
+            display: flex;
+
+            align-items: center;
+
+            width: 100%;
+
+            border:
+                2px solid #e5e7eb;
+
+            border-radius: 14px;
+
+            background: white;
+
+            transition:
+                border-color 0.25s,
+                box-shadow 0.25s;
+        }
+
+
+        .password-box:focus-within {
+
+            border-color: #10b981;
+
+            box-shadow:
+                0 0 0 4px
+                rgba(
+                    16,
+                    185,
+                    129,
+                    0.12
+                );
+        }
+
+
+        .password-box input {
+
+            width: 100%;
+
+            border: none;
+
+            outline: none;
+
+            padding:
+                15px 50px 15px 15px;
+
+            font-size: 16px;
+
+            color: #111827;
+
+            background: transparent;
+        }
+
+
+        .password-toggle {
+
+            position: absolute;
+
+            right: 8px;
+
+            width: 38px;
+
+            height: 38px;
+
+            border: none;
+
+            background: transparent;
+
+            cursor: pointer;
+
+            border-radius: 9px;
+
+            font-size: 18px;
+        }
+
+
+        .password-toggle:hover {
+
+            background: #ecfdf5;
+        }
+
+
+        /* =================================
+           REMEMBER
+        ================================= */
+
+        .login-options {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            margin:
+                2px 0 22px;
+
+            font-size: 13px;
+        }
+
+
+        .remember {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 7px;
+
+            color: #6b7280;
+
+            cursor: pointer;
+        }
+
+
+        .remember input {
+
+            width: 16px;
+
+            height: 16px;
+
+            accent-color: #059669;
+
+            cursor: pointer;
+        }
+
+
+        .forgot-password {
+
+            color: #059669;
+
+            font-weight: 700;
+
+            text-decoration: none;
+        }
+
+
+        .forgot-password:hover {
+
+            text-decoration: underline;
+        }
+
+
+        /* =================================
+           LOGIN BUTTON
+        ================================= */
+
+        .login-button {
+
+            width: 100%;
+
+            border: none;
+
+            border-radius: 14px;
+
+            padding: 16px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #047857,
+                    #10b981
+                );
+
+            color: white;
+
+            font-size: 16px;
+
+            font-weight: 700;
+
+            cursor: pointer;
+
+            transition:
+                transform 0.2s,
+                box-shadow 0.2s,
+                opacity 0.2s;
+        }
+
+
+        .login-button:hover {
+
+            transform:
+                translateY(-2px);
+
+            box-shadow:
+                0 12px 28px
+                rgba(
+                    5,
+                    150,
+                    105,
+                    0.30
+                );
+        }
+
+
+        .login-button:disabled {
+
+            opacity: 0.65;
+
+            cursor: not-allowed;
+
+            transform: none;
+
+            box-shadow: none;
+        }
+
+
+        /* =================================
+           MESSAGE
+        ================================= */
+
+        .message {
+
+            min-height: 22px;
+
+            margin-top: 14px;
+
+            text-align: center;
+
+            font-size: 14px;
+
+            font-weight: 600;
+        }
+
+
+        .message.error {
+
+            color: #dc2626;
+        }
+
+
+        .message.success {
+
+            color: #059669;
+        }
+
+
+        /* =================================
+           DIVIDER
+        ================================= */
+
+        .divider {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            margin:
+                23px 0 18px;
+
+            color: #9ca3af;
+
+            font-size: 12px;
+        }
+
+
+        .divider::before,
+        .divider::after {
+
+            content: "";
+
+            flex: 1;
+
+            height: 1px;
+
+            background: #e5e7eb;
+        }
+
+
+        /* =================================
+           REGISTER
+        ================================= */
+
+        .register-text {
+
+            text-align: center;
+
+            color: #6b7280;
+
+            font-size: 14px;
+        }
+
+
+        .register-text a {
+
+            color: #059669;
+
+            font-weight: 700;
+
+            text-decoration: none;
+        }
+
+
+        .register-text a:hover {
+
+            text-decoration: underline;
+        }
+
+
+        .back-home {
+
+            margin-top: 17px;
+
+            text-align: center;
+        }
+
+
+        .back-home a {
+
+            color: #9ca3af;
+
+            font-size: 13px;
+
+            text-decoration: none;
+        }
+
+
+        .back-home a:hover {
+
+            color: #059669;
+        }
+
+
+        /* =================================
+           MOBILE
+        ================================= */
+
+        @media (max-width: 800px) {
+
+            body.login-page {
+
+                padding: 18px 12px;
+            }
+
+            .login-wrapper {
+
+                grid-template-columns: 1fr;
+
+                max-width: 500px;
+
+                min-height: auto;
+
+                border-radius: 24px;
+            }
+
+            .login-left {
+
+                padding:
+                    40px 30px;
+
+                text-align: center;
+            }
+
+            .logo-icon {
+
+                margin-left: auto;
+
+                margin-right: auto;
+            }
+
+            .brand h1 {
+
+                font-size: 42px;
+            }
+
+            .brand-description {
+
+                margin-left: auto;
+
+                margin-right: auto;
+            }
+
+            .features {
+
+                text-align: left;
+            }
+
+            .login-right {
+
+                padding:
+                    40px 30px;
+            }
+        }
+
+
+        @media (max-width: 400px) {
+
+            .login-left {
+
+                padding:
+                    30px 22px;
+            }
+
+            .login-right {
+
+                padding:
+                    30px 22px;
+            }
+
+            .brand h1 {
+
+                font-size: 35px;
+            }
+
+            .login-title {
+
+                font-size: 28px;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body class="login-page">
+
+
+    <!-- BACKGROUND FOOD -->
+
+    <div class="background-food food-1">
+        🥗
+    </div>
+
+    <div class="background-food food-2">
+        🍔
+    </div>
+
+    <div class="background-food food-3">
+        🍕
+    </div>
+
+    <div class="background-food food-4">
+        🥤
+    </div>
+
+    <div class="background-food food-5">
+        🍜
+    </div>
+
+    <div class="background-food food-6">
+        🍰
+    </div>
+
+
+    <!-- MAIN CARD -->
+
+    <div class="login-wrapper">
+
+
+        <!-- LEFT -->
+
+        <section class="login-left">
+
+            <div class="brand">
+
+                <div class="logo-icon">
+                    🍔
+                </div>
+
+                <h1>
+                    FoodGo
+                </h1>
+
+                <h2>
+                    Fresh food.<br>
+                    Fast delivery.
+                </h2>
+
+                <p class="brand-description">
+
+                    Discover delicious meals from
+                    your favourite restaurants and
+                    get them delivered right to your
+                    doorstep.
+
+                </p>
+
+
+                <div class="features">
+
+                    <div class="feature">
+
+                        <div class="feature-icon">
+                            🍴
+                        </div>
+
+                        <span>
+                            Multiple restaurants
+                            and food choices
+                        </span>
+
+                    </div>
+
+
+                    <div class="feature">
+
+                        <div class="feature-icon">
+                            🚀
+                        </div>
+
+                        <span>
+                            Fast and convenient
+                            delivery
+                        </span>
+
+                    </div>
+
+
+                    <div class="feature">
+
+                        <div class="feature-icon">
+                            📍
+                        </div>
+
+                        <span>
+                            Easy location-based
+                            delivery
+                        </span>
+
+                    </div>
+
+
+                    <div class="feature">
+
+                        <div class="feature-icon">
+                            💵
+                        </div>
+
+                        <span>
+                            Cash on Delivery
+                            available
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- RIGHT -->
+
+        <section class="login-right">
+
+
+            <div class="login-badge">
+                🔐 Secure Login
+            </div>
+
+
+            <h2 class="login-title">
+                Welcome Back! 👋
+            </h2>
+
+
+            <p class="welcome-text">
+                Login with your mobile number
+                and password to continue.
+            </p>
+
+
+            <!-- MOBILE -->
+
+            <div class="input-group">
+
+                <label for="mobile">
+                    Mobile Number
+                </label>
+
+                <div class="input-box">
+
+                    <span class="country-code">
+                        +91
+                    </span>
+
+                    <input
+                        type="tel"
+                        id="mobile"
+                        maxlength="10"
+                        inputmode="numeric"
+                        autocomplete="tel"
+                        placeholder="Enter mobile number"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <!-- PASSWORD -->
+
+            <div class="input-group">
+
+                <label for="password">
+                    Password
+                </label>
+
+                <div class="password-box">
+
+                    <input
+                        type="password"
+                        id="password"
+                        minlength="6"
+                        autocomplete="current-password"
+                        placeholder="Enter your password"
+                    >
+
+                    <button
+                        type="button"
+                        class="password-toggle"
+                        id="togglePassword"
+                        aria-label="Show password">
+
+                        👁️
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- OPTIONS -->
+
+            <div class="login-options">
+
+                <label class="remember">
+
+                    <input
+                        type="checkbox"
+                        id="rememberMe"
+                    >
+
+                    <span>
+                        Remember me
+                    </span>
+
+                </label>
+
+
+                <a
+                    href="/register/"
+                    class="forgot-password">
+
+                    Create account
+
+                </a>
+
+            </div>
+
+
+            <!-- LOGIN -->
+
+            <button
+                type="button"
+                class="login-button"
+                id="loginButton">
+
+                Login to FoodGo
+
+            </button>
+
+
+            <!-- MESSAGE -->
+
+            <div
+                id="loginMessage"
+                class="message"
+                aria-live="polite">
+            </div>
+
+
+            <div class="divider">
+                <span>
+                    New to FoodGo?
+                </span>
+            </div>
+
+
+            <!-- REGISTER -->
+
+            <div class="register-text">
+
+                Create your account and
+                start ordering.
+
+                <a href="/register/">
+                    Register Now
+                </a>
+
+            </div>
+
+
+            <!-- HOME -->
+
+            <div class="back-home">
+
+                <a href="/">
+                    ← Back to FoodGo
+                </a>
+
+            </div>
+
+        </section>
+
+    </div>
+
+
+    <script>
+
+        /*
+         * FoodGo Login
+         * Mobile Number + Password
+         */
+
+        (function () {
+
+            "use strict";
+
+
+            const API_BASE_URL = "/api";
+
+
+            /*
+             * Get elements after the page
+             * has loaded.
+             */
+
+            const mobileInput =
+                document.getElementById("mobile");
+
+            const passwordInput =
+                document.getElementById("password");
+
+            const togglePassword =
+                document.getElementById(
+                    "togglePassword"
+                );
+
+            const rememberMe =
+                document.getElementById(
+                    "rememberMe"
+                );
+
+            const loginButton =
+                document.getElementById(
+                    "loginButton"
+                );
+
+            const message =
+                document.getElementById(
+                    "loginMessage"
+                );
+
+
+            /*
+             * Safety check.
+             *
+             * This prevents the old
+             * null.addEventListener error.
+             */
+
+            if (
+                !mobileInput ||
+                !passwordInput ||
+                !togglePassword ||
+                !rememberMe ||
+                !loginButton ||
+                !message
+            ) {
+
+                console.error(
+                    "FoodGo Login: Required HTML elements were not found."
+                );
 
                 return;
             }
 
 
-            if (!currentMobile) {
-
-                message.textContent =
-                    "Please enter your mobile number first.";
-
-                message.style.color =
-                    "#dc2626";
-
-                return;
-            }
-
-
-            verifyOtpButton.disabled =
-                true;
-
-            verifyOtpButton.textContent =
-                "Logging in...";
-
+            /*
+             * Load remembered mobile number.
+             */
 
             try {
 
-                /* ================================
-                   GET CUSTOMER
-                ================================= */
-
-                const response =
-                    await fetch(
-                        API_BASE_URL +
-                        "/customers/?mobile=" +
-                        encodeURIComponent(currentMobile)
+                const savedMobile =
+                    localStorage.getItem(
+                        "foodgoRememberMobile"
                     );
 
+                if (savedMobile) {
 
-                if (!response.ok) {
+                    mobileInput.value =
+                        savedMobile;
 
-                    const errorText =
-                        await response.text();
-
-                    throw new Error(
-                        "Customer API error: " +
-                        response.status +
-                        " - " +
-                        errorText
-                    );
-
+                    rememberMe.checked =
+                        true;
                 }
 
+            } catch (error) {
 
-                const customers =
-                    await response.json();
+                console.warn(
+                    "Remember-me storage unavailable."
+                );
+            }
 
 
-                let customer =
-                    null;
+            /*
+             * Only numbers in mobile field.
+             */
 
+            mobileInput.addEventListener(
+                "input",
+                function () {
 
-                /* ================================
-                   FIND CUSTOMER
-                ================================= */
-
-                if (Array.isArray(customers)) {
-
-                    customer =
-                        customers.find(
-                            function(item) {
-
-                                return String(item.mobile) ===
-                                    String(currentMobile);
-
-                            }
+                    this.value =
+                        this.value.replace(
+                            /[^0-9]/g,
+                            ""
                         );
 
                 }
+            );
 
 
-                /* ================================
-                   CREATE CUSTOMER
-                ================================= */
+            /*
+             * Show / Hide password.
+             */
 
-                if (!customer) {
+            togglePassword.addEventListener(
+                "click",
+                function () {
 
-                    const createResponse =
+                    if (
+                        passwordInput.type ===
+                        "password"
+                    ) {
+
+                        passwordInput.type =
+                            "text";
+
+                        togglePassword.textContent =
+                            "🙈";
+
+                        togglePassword.setAttribute(
+                            "aria-label",
+                            "Hide password"
+                        );
+
+                    } else {
+
+                        passwordInput.type =
+                            "password";
+
+                        togglePassword.textContent =
+                            "👁️";
+
+                        togglePassword.setAttribute(
+                            "aria-label",
+                            "Show password"
+                        );
+                    }
+
+                }
+            );
+
+
+            /*
+             * Login function.
+             */
+
+            async function loginUser() {
+
+                const mobile =
+                    mobileInput.value.trim();
+
+                const password =
+                    passwordInput.value;
+
+
+                /*
+                 * Validate mobile.
+                 */
+
+                if (
+                    !/^[0-9]{10}$/.test(
+                        mobile
+                    )
+                ) {
+
+                    message.textContent =
+                        "Please enter a valid 10-digit mobile number.";
+
+                    message.className =
+                        "message error";
+
+                    mobileInput.focus();
+
+                    return;
+                }
+
+
+                /*
+                 * Validate password.
+                 */
+
+                if (
+                    password.length < 6
+                ) {
+
+                    message.textContent =
+                        "Password must contain at least 6 characters.";
+
+                    message.className =
+                        "message error";
+
+                    passwordInput.focus();
+
+                    return;
+                }
+
+
+                /*
+                 * Loading state.
+                 */
+
+                loginButton.disabled =
+                    true;
+
+                loginButton.textContent =
+                    "Signing in...";
+
+                message.textContent =
+                    "Checking your account...";
+
+                message.className =
+                    "message";
+
+
+                try {
+
+                    const response =
                         await fetch(
                             API_BASE_URL +
-                            "/customers/",
+                            "/customers/login/",
                             {
                                 method: "POST",
 
@@ -190,169 +1547,172 @@
                                         "application/json"
                                 },
 
-                                body: JSON.stringify({
+                                body:
+                                    JSON.stringify({
+                                        mobile:
+                                            mobile,
 
-                                    mobile:
-                                        currentMobile,
-
-                                    name:
-                                        "FoodGo Customer"
-
-                                })
+                                        password:
+                                            password
+                                    })
                             }
                         );
 
 
-                    if (!createResponse.ok) {
+                    const data =
+                        await response.json();
 
-                        const errorText =
-                            await createResponse.text();
+
+                    /*
+                     * API error.
+                     */
+
+                    if (!response.ok) {
 
                         throw new Error(
-                            "Customer creation failed: " +
-                            createResponse.status +
-                            " - " +
-                            errorText
+                            data.message ||
+                            "Login failed."
                         );
-
                     }
 
 
-                    customer =
-                        await createResponse.json();
+                    /*
+                     * Customer returned
+                     * successfully.
+                     */
 
-                }
+                    const customer =
+                        data.customer;
 
 
-                /* ================================
-                   CHECK CUSTOMER ID
-                ================================= */
+                    /*
+                     * Save login state.
+                     */
 
-                if (!customer || !customer.id) {
-
-                    throw new Error(
-                        "Customer information was not returned by the server."
+                    localStorage.setItem(
+                        "foodgoLoggedIn",
+                        "true"
                     );
 
+                    localStorage.setItem(
+                        "foodgoCustomerId",
+                        String(
+                            customer.id
+                        )
+                    );
+
+                    localStorage.setItem(
+                        "foodgoMobile",
+                        customer.mobile
+                    );
+
+                    localStorage.setItem(
+                        "foodgoCustomerName",
+                        customer.name ||
+                        "FoodGo Customer"
+                    );
+
+
+                    /*
+                     * Remember mobile.
+                     */
+
+                    if (
+                        rememberMe.checked
+                    ) {
+
+                        localStorage.setItem(
+                            "foodgoRememberMobile",
+                            mobile
+                        );
+
+                    } else {
+
+                        localStorage.removeItem(
+                            "foodgoRememberMobile"
+                        );
+                    }
+
+
+                    /*
+                     * Success.
+                     */
+
+                    message.textContent =
+                        "Login successful! Opening FoodGo...";
+
+                    message.className =
+                        "message success";
+
+
+                    setTimeout(
+                        function () {
+
+                            window.location.href =
+                                "/restaurants/";
+
+                        },
+                        700
+                    );
+
+                } catch (error) {
+
+                    console.error(
+                        "FoodGo Login Error:",
+                        error
+                    );
+
+
+                    message.textContent =
+                        error.message ||
+                        "Unable to login. Please try again.";
+
+                    message.className =
+                        "message error";
+
+
+                    loginButton.disabled =
+                        false;
+
+                    loginButton.textContent =
+                        "Login to FoodGo";
                 }
 
-
-                /* ================================
-                   SAVE LOGIN
-                ================================= */
-
-                localStorage.setItem(
-                    "foodgoLoggedIn",
-                    "true"
-                );
-
-
-                localStorage.setItem(
-                    "foodgoCustomerId",
-                    String(customer.id)
-                );
-
-
-                localStorage.setItem(
-                    "foodgoMobile",
-                    currentMobile
-                );
-
-
-                localStorage.setItem(
-                    "foodgoCustomerName",
-                    customer.name ||
-                    "FoodGo Customer"
-                );
-
-
-                /* ================================
-                   SUCCESS
-                ================================= */
-
-                message.textContent =
-                    "Login successful! Redirecting...";
-
-                message.style.color =
-                    "#059669";
-
-
-                setTimeout(
-                    function() {
-
-                        window.location.href =
-                            "/restaurants/";
-
-                    },
-                    700
-                );
-
             }
 
 
-            catch (error) {
+            /*
+             * Login button.
+             */
 
-                console.error(
-                    "FoodGo Login Error:",
-                    error
-                );
-
-
-                message.textContent =
-                    "Login failed: " +
-                    error.message;
+            loginButton.addEventListener(
+                "click",
+                loginUser
+            );
 
 
-                message.style.color =
-                    "#dc2626";
+            /*
+             * Press Enter to login.
+             */
 
+            passwordInput.addEventListener(
+                "keydown",
+                function (event) {
 
-                verifyOtpButton.disabled =
-                    false;
+                    if (
+                        event.key === "Enter"
+                    ) {
 
+                        loginUser();
+                    }
 
-                verifyOtpButton.textContent =
-                    "Verify & Login";
+                }
+            );
 
-            }
+        })();
 
-        }
-    );
+    </script>
 
+</body>
 
-    /* ================================
-       ONLY NUMBERS - MOBILE
-    ================================= */
-
-    mobileInput.addEventListener(
-        "input",
-        function() {
-
-            this.value =
-                this.value.replace(
-                    /[^0-9]/g,
-                    ""
-                );
-
-        }
-    );
-
-
-    /* ================================
-       ONLY NUMBERS - OTP
-    ================================= */
-
-    otpInput.addEventListener(
-        "input",
-        function() {
-
-            this.value =
-                this.value.replace(
-                    /[^0-9]/g,
-                    ""
-                );
-
-        }
-    );
-
-</script>
+</html>
